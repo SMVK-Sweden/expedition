@@ -1,82 +1,101 @@
+import {useState} from 'react'
 import Head from 'next/head'
+import Navbar from '../components/Navbar'
+import Timeline from '../components/Timeline'
+import Map from '../components/Map'
+import Page from '../shared/types/Page'
+import styles from '../styles/Home.module.css'
+import CalendarData from '../pages/api/calendar_data.json'
+
+let pages: Page[] = [
+  {title: "home", href: "/"},
+  {title: "about", href: "/about"},
+]
+
 
 export default function Home() {
+  // get the date that was 100 years ago - this implementation
+  // will break in the future and needs improvment
+  let date = new Date()
+  date.setFullYear(date.getFullYear() - 138)
+  const dateString = `${date.getFullYear()}-${("0" + (date.getMonth()+1)).slice(-2)}-${("0" + date.getDate()).slice(-2)}`
+  // search for the date in the records
+  const startCalendarData = CalendarData.find(elem => elem.Datum == dateString)
+
+  // state of this component
+  const [currentCalendarData, setCurrentCalendarData] = useState(startCalendarData)
+
+  // create the paragraps to display info about the day
+  let infoParagraphs = []
+  for (const key in currentCalendarData) {
+    if (key === "Länk/Objekt") {
+      infoParagraphs.push(<p className="mb-10"><span className="font-bold">{key}: </span><a href={currentCalendarData[key]} className="text-blue-500">{currentCalendarData[key]}</a></p>)
+    } else {
+      infoParagraphs.push(<p className="mb-10"><span className="font-bold">{key}</span>: {currentCalendarData[key]}</p>)
+    }
+  }
+
+  // functions to change day
+  const incCurrentData = () => {
+    const index = CalendarData.indexOf(currentCalendarData)
+    setCurrentCalendarData(CalendarData[index + 1])
+  }
+  const decCurrentData = () => {
+    const index = CalendarData.indexOf(currentCalendarData)
+    setCurrentCalendarData(CalendarData[index - 1])
+  }
+
+  // render component
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <div>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Expedition vanadis</title>
+        <link rel="icon" href="/ship.png" />
       </Head>
 
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
+      <div className="flex flex-col overflow-hidden">
+        <Navbar pages={pages} logo_url="/ship.png"/>
 
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.tsx
-          </code>
-        </p>
+        <Map className={styles.homeMap} center={currentCalendarData.Koordinater} zoom={4} >
+          {({ TileLayer, Marker }) => (
+            <>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+              />
+              {
+                CalendarData.map((data) => {
+                  if (data.Koordinater) {
+                    return (
+                      <Marker position={data.Koordinater} key={data.Datum} eventHandlers={{
+                        click: () => {
+                          setCurrentCalendarData(data)
+                        }
+                    }} icon={L.icon({
+                      iconUrl: 'dot.png',
+                      iconSize: [20, 20],
+                    })}></Marker>
+                    )
+                  }
+                })
+              }
+              <Marker position={currentCalendarData.Koordinater} icon={L.icon({iconUrl: 'ship.png', iconSize: [100, 100]})}></Marker>
+            </>
+          )}
+        </Map>
 
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
+        <Timeline calendarData={CalendarData} currentCalendarData={currentCalendarData} changeCurrentCalendarData={(elem) => setCurrentCalendarData(elem)} />
 
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <div className="overflow-scroll bg-white">
+          <div className="flex bg bg-gray-200">
+            <button onClick={decCurrentData} className="flex-auto hover:bg-white transition-all ">igår</button>
+            <button onClick={incCurrentData} className="flex-auto hover:bg-white transition-all">imorgon</button>
+          </div>
+          <div className="">
+            {infoParagraphs}
+          </div>
         </div>
-      </main>
-
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
+      </div>
     </div>
   )
 }
