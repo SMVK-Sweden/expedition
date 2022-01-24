@@ -112,7 +112,7 @@ export default function Home() {
             type="range"
             value={index}
             min={0}
-            max={CalendarData.length}
+            max={CalendarData.length - 1}
             onChange={(e) => setIndex(parseInt(e.target.value))}
           />
           <div className="w-full my-12">
