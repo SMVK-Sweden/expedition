@@ -1,24 +1,31 @@
 import { useState } from 'react'
 import Head from 'next/head'
-import Navbar from '../components/Navbar'
-import Timeline from '../components/Timeline'
 import Map from '../components/Map'
-import styles from '../styles/Home.module.css'
 import CalendarData from '../pages/api/calendar_data.json'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 
-function InfoParagraphs({ data }: { data: any }) {
-  console.log(data)
-  const { Datum, Koordinater, Plats, ...stories } = data
+interface InfoParagraphsProps {
+  Plats?: string
+  coords?: [number, number]
+  Datum?: string
+  stories: any
+}
+
+function InfoParagraphs({
+  Datum,
+  coords,
+  Plats,
+  stories,
+}: InfoParagraphsProps) {
   // create the paragraps to display info about the day
   return (
     <div className="prose lg:prose-xl">
       <h3 className="text-gray-700">{Datum}</h3>
       <h2>{Plats}</h2>
-      {Object.keys(stories).map((key) => {
+      {coords && <h5>{`${coords[0]}, ${coords[1]}`}</h5>}
+      {Object.keys(stories).map((key, i) => {
         if (key === 'Länk/Objekt') {
           return (
-            <p className="mb-10">
+            <p className="mb-10" key={i}>
               <span className="font-bold">{`${key}: `}</span>
               <a href={stories[key]} className="text-blue-500">
                 {stories[key]}
@@ -27,7 +34,7 @@ function InfoParagraphs({ data }: { data: any }) {
           )
         } else {
           return (
-            <div>
+            <div key={i}>
               <h4>{key}</h4>
               <p className="mb-10">{stories[key]}</p>
             </div>
@@ -69,6 +76,10 @@ export default function Home() {
       index + 1 > CalendarData.length ? CalendarData.length - 1 : index + 1
     )
 
+  const { Koordinater, Plats, Datum, ...stories } = currentCalendarData
+
+  const coords = Koordinater as [number, number]
+
   return (
     <div>
       <Head>
@@ -81,15 +92,6 @@ export default function Home() {
           markers={markers}
           clickMarker={(i) => setIndex(i)}
         />
-
-        {/* 
-        <Timeline
-          calendarData={CalendarData}
-          currentCalendarData={currentCalendarData}
-          changeCurrentCalendarData={(elem: any) =>
-            setCurrentCalendarData(elem)
-          }
-        /> */}
         <div className="bg-white max-w-6xl w-full m-auto">
           <div className="flex">
             <button
@@ -114,7 +116,12 @@ export default function Home() {
             onChange={(e) => setIndex(parseInt(e.target.value))}
           />
           <div className="w-full my-12">
-            <InfoParagraphs data={currentCalendarData} />
+            <InfoParagraphs
+              coords={coords}
+              Plats={Plats}
+              Datum={Datum}
+              stories={stories}
+            />
           </div>
         </div>
       </div>

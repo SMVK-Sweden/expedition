@@ -1,9 +1,7 @@
-import { useEffect, useState, useMemo } from 'react'
 import L from 'leaflet'
-import * as ReactLeaflet from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import styles from './Map.module.css'
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 
 interface MapProps {
   position: [number, number]
@@ -16,7 +14,7 @@ interface ChangeViewProps {
   zoom: number
 }
 
-function ChangeView({ center, zoom }: ChangeViewProps) {
+function ChangeView({ center }: ChangeViewProps) {
   const map = useMap()
   map.setView(center)
   map.flyTo(center)
