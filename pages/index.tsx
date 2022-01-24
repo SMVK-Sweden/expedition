@@ -12,6 +12,41 @@ let pages: Page[] = [
   {title: "about", href: "/about"},
 ]
 
+function InfoParagraphs({data} : {data: any}) {
+  console.log(data)
+  const {Datum, Koordinater, Plats, ...stories} = data; 
+  // create the paragraps to display info about the day
+  return (
+    <div className="prose lg:prose-xl m-12">
+      <h3 className="text-gray-700">{Datum}</h3>
+      <h2>{Plats}</h2>
+      {Object.keys(stories).map(key => {
+        if (key === "Länk/Objekt") {
+          return (
+            <p className="mb-10">
+              <span className="font-bold">
+                {`${key}: `}
+              </span>
+              <a href={stories[key]} className="text-blue-500">
+                {stories[key]}
+              </a>
+            </p>
+          );
+        } else {
+          return (
+            <div>
+              <h4>{key}</h4>
+              <p className="mb-10">
+                {stories[key]}
+              </p>
+            </div>
+          )
+        }
+      })}
+    </div>
+  );
+}
+
 
 export default function Home() {
   // get the date that was 100 years ago - this implementation
@@ -23,17 +58,7 @@ export default function Home() {
   const startCalendarData = CalendarData.find(elem => elem.Datum == dateString)
 
   // state of this component
-  const [currentCalendarData, setCurrentCalendarData] = useState(startCalendarData)
-
-  // create the paragraps to display info about the day
-  let infoParagraphs = []
-  for (const key in currentCalendarData) {
-    if (key === "Länk/Objekt") {
-      infoParagraphs.push(<p className="mb-10"><span className="font-bold">{key}: </span><a href={currentCalendarData[key]} className="text-blue-500">{currentCalendarData[key]}</a></p>)
-    } else {
-      infoParagraphs.push(<p className="mb-10"><span className="font-bold">{key}</span>: {currentCalendarData[key]}</p>)
-    }
-  }
+  const [currentCalendarData, setCurrentCalendarData] = useState<Record<string, any> | undefined>(startCalendarData)
 
   // functions to change day
   const incCurrentData = () => {
@@ -55,9 +80,8 @@ export default function Home() {
 
       <div className="flex flex-col overflow-hidden">
         <Navbar pages={pages} logo_url="/ship.png"/>
-
-        <Map className={styles.homeMap} center={currentCalendarData.Koordinater} zoom={4} >
-          {({ TileLayer, Marker }) => (
+        <Map className={styles.homeMap} center={currentCalendarData?.Koordinater} zoom={4} >
+          {({ TileLayer, Marker } : {TileLayer: any; Marker: any}) => (
             <>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -67,32 +91,39 @@ export default function Home() {
                 CalendarData.map((data) => {
                   if (data.Koordinater) {
                     return (
-                      <Marker position={data.Koordinater} key={data.Datum} eventHandlers={{
-                        click: () => {
-                          setCurrentCalendarData(data)
+                      <Marker
+                        position={data.Koordinater}
+                        key={data.Datum}
+                        eventHandlers={
+                          {
+                            click: () => {
+                              setCurrentCalendarData(data)
+                            }
+                          }
                         }
-                    }} icon={L.icon({
-                      iconUrl: 'dot.png',
-                      iconSize: [20, 20],
-                    })}></Marker>
+                        icon={L.icon({
+                          iconUrl: 'dot.png',
+                          iconSize: [20, 20],
+                        })}
+                      />
                     )
                   }
                 })
               }
-              <Marker position={currentCalendarData.Koordinater} icon={L.icon({iconUrl: 'ship.png', iconSize: [100, 100]})}></Marker>
+              <Marker position={currentCalendarData?.Koordinater} icon={L.icon({iconUrl: 'ship.png', iconSize: [100, 100]})}></Marker>
             </>
           )}
         </Map>
 
-        <Timeline calendarData={CalendarData} currentCalendarData={currentCalendarData} changeCurrentCalendarData={(elem) => setCurrentCalendarData(elem)} />
+        <Timeline calendarData={CalendarData} currentCalendarData={currentCalendarData} changeCurrentCalendarData={(elem: any) => setCurrentCalendarData(elem)} />
 
-        <div className="overflow-scroll bg-white">
-          <div className="flex bg bg-gray-200">
-            <button onClick={decCurrentData} className="flex-auto hover:bg-white transition-all ">igår</button>
-            <button onClick={incCurrentData} className="flex-auto hover:bg-white transition-all">imorgon</button>
+        <div className="bg-white max-w-6xl w-full m-auto">
+          <div className="flex">
+            <button onClick={decCurrentData} className="flex-auto bg-gray-100 border-1 hover:bg-white transition-all px-4 py-4">igår</button>
+            <button onClick={incCurrentData} className="flex-auto bg-gray-100 border-1 hover:bg-white transition-all px-4 py-4">imorgon</button>
           </div>
           <div className="">
-            {infoParagraphs}
+            <InfoParagraphs data={currentCalendarData} />
           </div>
         </div>
       </div>

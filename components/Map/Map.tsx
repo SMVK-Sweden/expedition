@@ -14,6 +14,7 @@ const dotIcon = L.icon({iconUrl: '/dot.png'})
 
 function ChangeView({center, zoom}) {
   const map = useMap()
+  console.log(center, zoom)
   map.setView(center, zoom)
   map.flyTo(center)
   return null
