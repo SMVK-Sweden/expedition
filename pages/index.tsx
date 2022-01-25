@@ -90,8 +90,10 @@ export default function Home() {
       <div className="flex flex-col overflow-hidden">
         <Map
           position={center}
+          zoom={4}
           markers={markers}
           clickMarker={(i) => setIndex(i)}
+          className="w-full max-w-6xl m-auto"
         />
         <div className="bg-white max-w-6xl w-full m-auto">
           <div className="flex">
