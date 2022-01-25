@@ -1,7 +1,7 @@
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import styles from './Map.module.css'
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, useMap, Polyline } from 'react-leaflet'
 
 interface MapProps {
   position: [number, number]
@@ -17,7 +17,6 @@ interface ChangeViewProps {
 function ChangeView({ center }: ChangeViewProps) {
   const map = useMap()
   map.setView(center)
-  map.flyTo(center)
   return null
 }
 
@@ -43,6 +42,7 @@ function Map({ position, markers, clickMarker }: MapProps) {
               eventHandlers={{
                 click: () => {
                   clickMarker(i)
+                  console.log(i)
                 },
               }}
               icon={L.icon({
@@ -52,6 +52,9 @@ function Map({ position, markers, clickMarker }: MapProps) {
             />
           )
       })}
+
+      <Polyline positions={markers.filter(marker => marker)} />
+
       <Marker
         position={position}
         icon={L.icon({ iconUrl: 'ship.png', iconSize: [100, 100] })}
@@ -62,45 +65,3 @@ function Map({ position, markers, clickMarker }: MapProps) {
 
 export default Map
 
-// const { MapContainer } = ReactLeaflet
-// const { useMap } = ReactLeaflet
-
-// // import icons for markers
-// const boatIcon = L.icon({ iconUrl: '/ship.png' })
-// const dotIcon = L.icon({ iconUrl: '/dot.png' })
-
-// function ChangeView({ center, zoom }) {
-//   const map = useMap()
-//   map.setView(center, zoom)
-//   map.flyTo(center)
-//   return null
-// }
-
-// const Map = ({ children, className, center, zoom, ...rest }) => {
-//   let mapClassName = styles.map
-
-//   if (className) {
-//     mapClassName = `${mapClassName} ${className}`
-//   }
-
-//   /*
-//   useEffect(() => {
-//     delete L.Icon.Default.prototype._getIconUrl;
-
-//     L.Icon.Default.mergeOptions({
-//       iconRetinaUrl: require( 'leaflet/dist/images/marker-icon-2x.png' ),
-//       iconUrl: require( 'leaflet/dist/images/marker-icon.png' ),
-//       shadowUrl: require( 'leaflet/dist/images/marker-shadow.png' ),
-//     });
-//   }, []);
-//   */
-
-//   return (
-//     <MapContainer className={mapClassName} {...rest}>
-//       <ChangeView center={center} zoom={zoom} />
-//       {children(ReactLeaflet)}
-//     </MapContainer>
-//   )
-// }
-
-// export default Map
