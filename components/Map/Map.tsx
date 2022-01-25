@@ -1,4 +1,4 @@
-import L from 'leaflet'
+import L, { LatLngExpression } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import styles from './Map.module.css'
 import {CustomMarker} from './CustomMarker'
@@ -54,13 +54,12 @@ function Map({ position, zoom, markers, clickMarker }: MapProps) {
           )
       })}
 
-      <Polyline positions={markers.filter((marker, i) => {
-        return marker && i <= positionIndex
-      })} />
+      <Polyline positions={markers.filter((marker, i) => marker && i <= positionIndex) as [LatLngExpression, LatLngExpression]} />
 
       <CustomMarker
         position={position}
         initialSize={20}
+        eventHandlers={{}}
         iconUrl='ship.png'
       />
     </MapContainer>
