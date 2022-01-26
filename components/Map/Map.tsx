@@ -1,10 +1,12 @@
-import L from 'leaflet'
+import L, { LatLngExpression } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import styles from './Map.module.css'
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
+import {CustomMarker} from './CustomMarker'
+import { MapContainer, TileLayer, Marker, useMap, Polyline } from 'react-leaflet'
 
 interface MapProps {
   position: [number, number]
+  zoom: number
   markers: ([number, number] | undefined)[]
   clickMarker: (i: number) => void
 }
@@ -17,15 +19,16 @@ interface ChangeViewProps {
 function ChangeView({ center }: ChangeViewProps) {
   const map = useMap()
   map.setView(center)
-  map.flyTo(center)
   return null
 }
 
-function Map({ position, markers, clickMarker }: MapProps) {
+function Map({ position, zoom, markers, clickMarker }: MapProps) {
+  const positionIndex = markers.indexOf(position)
+
   return (
     <MapContainer
       center={position}
-      zoom={7}
+      zoom={zoom}
       // scrollWheelZoom={false}
       className={styles.map}
     >
@@ -33,28 +36,31 @@ function Map({ position, markers, clickMarker }: MapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <ChangeView center={position} zoom={3} />
+      <ChangeView center={position} zoom={zoom} />
       {markers.map((coords, i) => {
         if (coords && coords !== position)
           return (
-            <Marker
+            <CustomMarker
               position={coords}
+              initialSize={2}
               key={i}
               eventHandlers={{
                 click: () => {
                   clickMarker(i)
                 },
               }}
-              icon={L.icon({
-                iconUrl: 'dot.png',
-                iconSize: [20, 20],
-              })}
+              iconUrl='dot.png'
             />
           )
       })}
-      <Marker
+
+      <Polyline positions={markers.filter((marker, i) => marker && i <= positionIndex) as [LatLngExpression, LatLngExpression]} />
+
+      <CustomMarker
         position={position}
-        icon={L.icon({ iconUrl: 'ship.png', iconSize: [100, 100] })}
+        initialSize={20}
+        eventHandlers={{}}
+        iconUrl='ship.png'
       />
     </MapContainer>
   )
@@ -62,45 +68,3 @@ function Map({ position, markers, clickMarker }: MapProps) {
 
 export default Map
 
-// const { MapContainer } = ReactLeaflet
-// const { useMap } = ReactLeaflet
-
-// // import icons for markers
-// const boatIcon = L.icon({ iconUrl: '/ship.png' })
-// const dotIcon = L.icon({ iconUrl: '/dot.png' })
-
-// function ChangeView({ center, zoom }) {
-//   const map = useMap()
-//   map.setView(center, zoom)
-//   map.flyTo(center)
-//   return null
-// }
-
-// const Map = ({ children, className, center, zoom, ...rest }) => {
-//   let mapClassName = styles.map
-
-//   if (className) {
-//     mapClassName = `${mapClassName} ${className}`
-//   }
-
-//   /*
-//   useEffect(() => {
-//     delete L.Icon.Default.prototype._getIconUrl;
-
-//     L.Icon.Default.mergeOptions({
-//       iconRetinaUrl: require( 'leaflet/dist/images/marker-icon-2x.png' ),
-//       iconUrl: require( 'leaflet/dist/images/marker-icon.png' ),
-//       shadowUrl: require( 'leaflet/dist/images/marker-shadow.png' ),
-//     });
-//   }, []);
-//   */
-
-//   return (
-//     <MapContainer className={mapClassName} {...rest}>
-//       <ChangeView center={center} zoom={zoom} />
-//       {children(ReactLeaflet)}
-//     </MapContainer>
-//   )
-// }
-
-// export default Map

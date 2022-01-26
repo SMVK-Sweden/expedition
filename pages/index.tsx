@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Head from 'next/head'
 import Map from '../components/Map'
 import CalendarData from '../pages/api/calendar_data.json'
+import {todaysTravelDateIndex} from '../shared/utils'
 
 interface InfoParagraphsProps {
   Plats?: string
@@ -58,7 +59,7 @@ function findBestCoords(index: number): [number, number] {
 }
 
 export default function Home() {
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(todaysTravelDateIndex())
   const currentCalendarData = CalendarData[index]
   const center: [number, number] =
     currentCalendarData.Koordinater === undefined
@@ -89,6 +90,7 @@ export default function Home() {
       <div className="flex flex-col overflow-hidden">
         <Map
           position={center}
+          zoom={4}
           markers={markers}
           clickMarker={(i) => setIndex(i)}
         />
