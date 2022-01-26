@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import Head from 'next/head'
 import Map from '../components/Map'
+import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
-import {todaysTravelDateIndex} from '../shared/utils'
+import { todaysTravelDateIndex } from '../shared/utils'
 
 interface InfoParagraphsProps {
   Plats?: string
@@ -66,8 +67,13 @@ export default function Home() {
       ? findBestCoords(index)
       : (currentCalendarData.Koordinater as [number, number])
 
-  const markers: [number, number][] = CalendarData.map(
-    (data) => data.Koordinater as [number, number]
+  const markers: Marker[] = CalendarData.map(
+    (data, index) =>
+      ({
+        coords: data.Koordinater,
+        index,
+        hasInformation: Object.keys(data).length > 3,
+      } as Marker)
   )
 
   const decreaseIndex = () => setIndex(index - 1 < 0 ? 0 : index - 1)
