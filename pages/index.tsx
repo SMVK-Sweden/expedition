@@ -4,6 +4,7 @@ import Map from '../components/Map'
 import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
+import Button from '../components/Button'
 
 interface InfoParagraphsProps {
   Plats?: string
@@ -101,19 +102,13 @@ export default function Home() {
           clickMarker={(i) => setIndex(i)}
         />
         <div className="bg-white max-w-6xl w-full m-auto">
-          <div className="flex">
-            <button
-              onClick={decreaseIndex}
-              className="flex-auto bg-gray-100 border-1 hover:bg-white transition-all px-4 py-4"
-            >
+          <div className="flex gap-x-2">
+            <Button className="flex-auto" onClick={decreaseIndex}>
               igår
-            </button>
-            <button
-              onClick={increaseIndex}
-              className="flex-auto bg-gray-100 border-1 hover:bg-white transition-all px-4 py-4"
-            >
+            </Button>
+            <Button className="flex-auto" onClick={increaseIndex}>
               imorgon
-            </button>
+            </Button>
           </div>
           <input
             className="w-full p-4"

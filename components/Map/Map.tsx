@@ -1,6 +1,5 @@
 import L, { LatLngExpression } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import styles from './Map.module.css'
 import { CustomMarker } from './CustomMarker'
 import {
   MapContainer,
