@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 import Map from '../components/Map'
 import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
-import { todaysTravelDateIndex } from '../shared/utils'
+import { getImageLink, todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 
 interface InfoParagraphsProps {
@@ -44,6 +44,18 @@ function InfoParagraphs({
           )
         }
       })}
+      <h2>bilder från ksamsök</h2>
+      <KsamsokImage search="vanadis"></KsamsokImage>
+    </div>
+  )
+}
+
+async function KsamsokImage({ search }) {
+  const url = getImageLink(search)
+  console.log('from KsamsokImage component', url)
+  return (
+    <div>
+      <img src={url} alt="" />
     </div>
   )
 }
