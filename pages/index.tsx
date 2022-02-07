@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Map from '../components/Map'
 import { Marker } from '../components/Map/Map'
@@ -50,12 +50,24 @@ function InfoParagraphs({
   )
 }
 
-async function KsamsokImage({ search }) {
-  const url = getImageLink(search)
-  console.log('from KsamsokImage component', url)
+interface KsamsokImageProps {
+    search: string
+}
+
+function KsamsokImage({ search }: KsamsokImageProps) {
+  const [url, setUrl] = useState("")
+  useEffect(() => {
+      const f = async () => {
+        const res = await getImageLink(search)
+        setUrl(res)
+      }
+
+      f()
+    }, [])
+
   return (
     <div>
-      <img src={url} alt="" />
+      <img src={url} alt="no image" />
     </div>
   )
 }

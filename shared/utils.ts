@@ -1,5 +1,4 @@
 import CalendarData from '../pages/api/calendar_data.json'
-import JSDOM from 'jsdom'
 
 // calculate what date of the travel that should be shown
 // TODO: this needs to be updated to work for the whole
@@ -18,16 +17,19 @@ export function todaysTravelDateIndex(): number {
 }
 
 // search ksamsök and pares the xml that is returned to get the image link
-export function getImageLink(search: string): string {
-  const searchUrl = `https://kulturarvsdata.se/ksamsok/api?method=search&hitsPerPage=1&query=%22${search}%22%20and%20thumbnailExists=j`
-  let link = ''
-  fetch(searchUrl)
-    .then((response) => response.text())
-    .then((data) => {
-      const xml = new DOMParser().parseFromString(data, 'application/xml')
-      link = xml.querySelector('Image lowresSource')?.textContent || ''
-      console.log('from getImageLink()', link)
-      return link
-    })
-    .catch(console.error)
+export async function getImageLink(search: string) {
+  const query = encodeURIComponent(`"${search}" and thumbnailExists=j`)
+  const searchUrl = `https://kulturarvsdata.se/ksamsok/api?method=search&hitsPerPage=100&recordSchema=xml&fields=lowresSource&query=${query}`
+
+  const response = await fetch(searchUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+      accept: 'application/json'
+    }
+  })
+  const json = await response.json()
+
+  const randomIndex = Math.floor(Math.random()*100)
+  return json.result.records.record[randomIndex].field[1].content
 }
+
