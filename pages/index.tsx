@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 import Map from '../components/Map'
 import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
-import { getImageLink, todaysTravelDateIndex } from '../shared/utils'
+import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 
 interface InfoParagraphsProps {
@@ -44,30 +44,6 @@ function InfoParagraphs({
           )
         }
       })}
-      <h2>bilder från ksamsök</h2>
-      <KsamsokImage search="vanadis"></KsamsokImage>
-    </div>
-  )
-}
-
-interface KsamsokImageProps {
-    search: string
-}
-
-function KsamsokImage({ search }: KsamsokImageProps) {
-  const [url, setUrl] = useState("")
-  useEffect(() => {
-      const f = async () => {
-        const res = await getImageLink(search)
-        setUrl(res)
-      }
-
-      f()
-    }, [])
-
-  return (
-    <div>
-      <img src={url} alt="no image" />
     </div>
   )
 }

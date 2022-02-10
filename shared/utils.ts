@@ -24,12 +24,11 @@ export async function getImageLink(search: string) {
   const response = await fetch(searchUrl, {
     headers: {
       'Content-Type': 'application/json',
-      accept: 'application/json'
-    }
+      accept: 'application/json',
+    },
   })
   const json = await response.json()
 
-  const randomIndex = Math.floor(Math.random()*100)
+  const randomIndex = Math.floor(Math.random() * 100)
   return json.result.records.record[randomIndex].field[1].content
 }
-
