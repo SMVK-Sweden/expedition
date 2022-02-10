@@ -5,6 +5,8 @@ import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
+import NavbarMenu from '../components/Menu/NavbarMenu'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 interface InfoParagraphsProps {
   Plats?: string
@@ -94,6 +96,18 @@ export default function Home() {
         <title>Expedition vanadis</title>
         <link rel="icon" href="/ship.png" />
       </Head>
+
+      {/*   
+      Vet inte om det är rätt placerat, men det funkar
+      */}
+      <div>
+        <Router>
+          <Routes>
+            <Route path="/" element={<NavbarMenu />} />
+          </Routes>
+        </Router>
+      </div>
+
       <div className="flex flex-col overflow-hidden">
         <Map
           position={center}
