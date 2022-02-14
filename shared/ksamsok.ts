@@ -15,15 +15,16 @@ export async function ksamsokSearch(query: string, metadata: string) {
   return json.result
 }
 
-export async function vanadisImages() {
-  const res = await ksamsokSearch('vanadis AND thumbnailExists=j', '')
+export async function imageWithDescriptionMany(query: string) {
+  const res = await ksamsokSearch(query, '')
   const graphs = res.records.map((record: any) => record.record['@graph'])
 
   const processedRecords = graphs.map((g: any) => {
-    const source =
-      g.find(
-        (node: any) => node['@type'] == 'Image' || node['@type'] == 'ns1:Image' // sometimes, the nodenames has the prefix ns1:
-      ).lowresSource || ''
+    const possibleSource = g.find(
+      (node: any) => node['@type'] == 'Image' || node['@type'] == 'ns1:Image' // sometimes, the nodenames has the prefix ns1:
+    )
+
+    const source = possibleSource ? possibleSource.lowresSource : ''
 
     const descriptions = g.filter(
       (node: any) =>

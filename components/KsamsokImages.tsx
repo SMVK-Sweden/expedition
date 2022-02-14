@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { vanadisImages } from '../shared/ksamsok'
+import { imageWithDescriptionMany } from '../shared/ksamsok'
 
 interface KsamsokImageProps {
   source: string
@@ -9,17 +9,18 @@ interface KsamsokImageProps {
 export function KsamsokImage({ source, description }: KsamsokImageProps) {
   return (
     <div>
-      <img src={source} alt="no image" />
+      <img src={source} alt="bild saknas" />
       <p>{description}</p>
     </div>
   )
 }
 
 export default function KsamsokImages() {
+  const [query, setQuery] = useState('text="vanadis" AND thumbnailExists=j')
   const [records, setRecords] = useState<KsamsokImageProps[]>([])
   useEffect(() => {
     const f = async () => {
-      const res = await vanadisImages()
+      const res = await imageWithDescriptionMany(query)
       setRecords(res)
     }
 
@@ -28,6 +29,20 @@ export default function KsamsokImages() {
 
   return (
     <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          imageWithDescriptionMany(query).then((res) => setRecords(res))
+        }}
+      >
+        <textarea
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="border-black"
+        />
+        <input type="submit" value="sök" className="ml-10 bg-blue-300" />
+      </form>
+
       {records.map((r) => (
         <KsamsokImage
           key={r.source}
