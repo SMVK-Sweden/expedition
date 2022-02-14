@@ -1,22 +1,9 @@
-import * as jsonld from 'jsonld'
-
-export async function ksamsok(search: string) {
-  const query = encodeURIComponent(`"${search}" and thumbnailExists=j`)
-  const searchUrl = `https://kulturarvsdata.se/ksamsok/api?method=search&hitsPerPage=100&recordSchema=presentation&query=${query}`
-
-  const response = await fetch(searchUrl, {
-    headers: {
-      Accept: 'application/json-ld',
-    },
-  })
-
-  const json = await response.json()
-  return json
-}
+const apiUrl = 'https://kulturarvsdata.se/ksamsok/api?method=search'
 
 export async function ksamsokSearch(query: string, metadata: string) {
-  const queryStr = encodeURIComponent(query)
-  const searchUrl = `https://kulturarvsdata.se/ksamsok/api?method=search&${metadata}&query=${queryStr}`
+  const searchUrl = `${apiUrl}&${metadata}&query=text=${encodeURIComponent(
+    query
+  )}`
 
   const response = await fetch(searchUrl, {
     headers: {
@@ -28,34 +15,32 @@ export async function ksamsokSearch(query: string, metadata: string) {
   return json.result
 }
 
-/*
- * query is a cql query
- * fiels is a comma separated list of the fields to include
- */
-interface KeyVal {
-  name: string
-  content: any
-}
+export async function vanadisImages() {
+  const res = await ksamsokSearch('vanadis AND thumbnailExists=j', '')
+  const graphs = res.records.map((record) => record.record['@graph'])
 
-export async function ksamsokJson(query: string, fields: string) {
-  const res = await ksamsokSearch(
-    `${query}`,
-    `recordSchema=xml&fields=${fields}`
-  )
+  const processedRecords = graphs.map((g) => {
+    const source =
+      g.find(
+        (node) => node['@type'] == 'Image' || node['@type'] == 'ns1:Image' // sometimes, the nodenames has the prefix ns1:
+      ).lowresSource || ''
 
-  const records = res.records.record.map((record) => record.field)
-  const recordObjects = records.map((record) => {
-    const obj = {}
-    record.forEach(({ name, content }: KeyVal) => {
-      if (obj[name]) {
-        if (!Array.isArray(obj[name])) obj[name] = [obj[name]]
-        obj[name].push(content)
-      } else {
-        obj[name] = content
-      }
-    })
-    return obj
+    const descriptions = g.filter(
+      (node) =>
+        node['@type'] == 'ItemDescription' ||
+        node['@type'] == 'ns1:ItemDescription'
+    )
+
+    const possibleDescription = descriptions.find(
+      (node) => node.type['@value'] == 'Beskrivning'
+    )
+
+    const description = possibleDescription
+      ? possibleDescription.desc['@value']
+      : 'beskrivning saknas'
+
+    return { source: source, description: description }
   })
 
-  return recordObjects
+  return processedRecords
 }

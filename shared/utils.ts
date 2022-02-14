@@ -18,7 +18,7 @@ export function todaysTravelDateIndex(): number {
 
 // search ksamsök and pares the xml that is returned to get the image link
 export async function getImageLink(search: string) {
-  const query = encodeURIComponent(`"${search}" and thumbnailExists=j`)
+  const query = encodeURIComponent(`text="vanadis" and thumbnailExists=j`)
   const searchUrl = `https://kulturarvsdata.se/ksamsok/api?method=search&hitsPerPage=100&recordSchema=xml&fields=lowresSource&query=${query}`
 
   const response = await fetch(searchUrl, {
