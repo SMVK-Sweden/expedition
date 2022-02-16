@@ -12,11 +12,9 @@ export default function Characters() {
             <a>Characters</a>
           </Link>
         </Button>
-        <Button>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-        </Button>
+        <Link href="/">
+          <Button>Home</Button>
+        </Link>
         <p className="text-left md:text-left">
           {' '}
           Etnografiska musueet information:{' '}
