@@ -6,18 +6,21 @@
     "start": "next start"
   },
   "dependencies": {
+    "@prisma/client": "3.9.2",
     "clsx": "^1.1.1",
     "leaflet": "^1.7.1",
     "next": "^12.0.8",
+    "prisma": "^3.9.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-leaflet": "^3.2.5"
+    "react-leaflet": "^3.2.5",
+    "ts-node": "^10.5.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.0.8",
     "@tailwindcss/typography": "^0.5.0",
     "@types/leaflet": "^1.7.8",
-    "@types/node": "17.0.4",
+    "@types/node": "^17.0.18",
     "@types/react": "17.0.38",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
@@ -30,6 +33,6 @@
     "postcss": "^8.4.5",
     "prettier": "2.5.1",
     "tailwindcss": "^3.0.7",
-    "typescript": "4.5.4"
+    "typescript": "^4.5.5"
   }
 }
