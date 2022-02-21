@@ -5,17 +5,15 @@ import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
-//import NavbarMenu from '../components/Menu/NavbarMenu'
-//import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-interface InfoParagraphsProps {
+export interface InfoParagraphsProps {
   Plats?: string
   coords?: [number, number]
   Datum?: string
   stories: any
 }
 
-function InfoParagraphs({
+export function InfoParagraphs({
   Datum,
   coords,
   Plats,
@@ -50,7 +48,7 @@ function InfoParagraphs({
   )
 }
 
-function findBestCoords(index: number): [number, number] {
+export function findBestCoords(index: number): [number, number] {
   for (let i = index; i > 0; i--) {
     if (CalendarData[i].Koordinater)
       return CalendarData[i].Koordinater as [number, number]

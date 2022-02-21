@@ -9,13 +9,13 @@ import * as FiIcons from 'react-icons/Fi'
 export const SidebarData = [
   {
     title: 'Vanadis info',
-    path: '/info',
+    path: 'https://sv.wikipedia.org/wiki/Vanadis_v%C3%A4rldsomsegling',
     icon: <GiIcons.GiSailboat />,
     cName: 'nav-text',
   },
   {
     title: 'Kontakta oss',
-    path: '/contact',
+    path: 'https://www.etnografiskamuseet.se/besok/kontakta-oss/',
     icon: <FiIcons.FiPhoneCall />,
     cName: 'nav-text',
   },
@@ -28,7 +28,7 @@ export const SidebarData = [
   {
     title: 'Var är skeppet idag',
     path: '/position',
-    icon: <GiIcons.GiPaperBoat />,
+    icon: <GiIcons.GiPositionMarker />,
     cName: 'nav-text',
   },
 ]

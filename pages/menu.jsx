@@ -1,15 +1,13 @@
-import * as FiIcons from 'react-icons/fi'
 import * as AiIcons from 'react-icons/ai'
 import * as GiIcons from 'react-icons/gi'
 import React, { useState } from 'react'
-import { Info } from './Info'
 import { IconContext } from 'react-icons'
+
 import Link from 'next/link'
-import { SidebarData } from '../components/Menu/SideBarData'
+import { SidebarData } from '../components/SideBarData'
 
 export default function Menu() {
   const [sidebar, setSidebar] = useState(false)
-
   const showSidbar = () => setSidebar(!sidebar)
   return (
     <div className="navbar">
@@ -27,7 +25,7 @@ export default function Menu() {
               return (
                 <li key={index} className={item.cName}>
                   <Link href={item.path}>
-                    <a>
+                    <a target="_blank">
                       {item.icon} <span>{item.title}</span>{' '}
                     </a>
                   </Link>
