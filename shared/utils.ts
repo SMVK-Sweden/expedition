@@ -29,8 +29,6 @@ export async function getImageLink(search: string) {
   })
   const json = await response.json()
 
-              console.log("teeest");
-
   const randomIndex = Math.floor(Math.random() * 100)
   return json.result.records.record[randomIndex].field[1].content
 }

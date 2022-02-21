@@ -6,8 +6,6 @@ import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 
-      console.log("hi");;;;
-
 interface InfoParagraphsProps {
   Plats?: string
   coords?: [number, number]
