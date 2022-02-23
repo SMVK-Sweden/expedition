@@ -1,4 +1,5 @@
 import useSWR from 'swr'
+import info from '../pages/api/about_page.json'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
