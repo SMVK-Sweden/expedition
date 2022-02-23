@@ -1,8 +1,13 @@
 import React from 'react'
 import Button from '../components/Button'
-import About from '../pages/about'
+//import About from '../pages/about'
 import Link from 'next/link'
 import Fetcher from '../components/Fetcher'
+
+import useSWR from 'swr'
+import info from '../pages/api/about_page.json'
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 export default function Characters() {
   return (

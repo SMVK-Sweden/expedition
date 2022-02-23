@@ -1,18 +1,31 @@
 import useSWR from 'swr'
-import info from '../pages/api/about_page.json'
+//import Info from '../public/about_page.json'
+import CalendarData from '../pages/api/calendar_data.json'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 export default function Fetcher() {
-  const { data, error } = useSWR('../pages/api/about_page.json', fetcher)
+  const { data, error } = useSWR('about_page.json', fetcher)
 
-  if (error) return <div>Failed to load</div>
-  if (!data) return <div>Loading...</div>
+  {
+    if (error) return <div>Failed to load</div>
 
-  return (
-    <div>
-      <h1>{data.firstName}</h1>
-      <p>{data.lastName}</p>
-    </div>
-  )
+    if (!data) return <div>Loading...</div>
+
+    return (
+      <div className="text-[22px]">
+        <div className="text-center">
+          <h1>{data.rubrik}</h1>
+        </div>
+
+        <div className="text-left">
+          <h1>{data.inledning}</h1>
+        </div>
+
+        <div className="text-left">
+          <h1>{data.brodtext}</h1>
+        </div>
+      </div>
+    )
+  }
 }
