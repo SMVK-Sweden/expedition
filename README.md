@@ -47,4 +47,4 @@ Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&ut
 
 ### Anropa databasen i koden
 
-**Anropa endast databasen i api-routes**. Man gör det som sagt genom att använda `PrismaClient`. [Se här](https://www.prisma.io/docs/concepts/components/prisma-client/crud)
+**Anropa endast databasen i api-routes!**. Man gör det som sagt genom att använda `PrismaClient`. [Se här](https://www.prisma.io/docs/concepts/components/prisma-client/crud)
