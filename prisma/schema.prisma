@@ -10,26 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Diary {
-  id       String  @id @default(uuid())
-  dayId    String
-  Day      Day?    @relation(fields: [dayId], references: [id])
-  eventId  String?
-  fullName String
-  Diary    String
-}
-
 model Day {
-  id           String   @id @default(uuid())
+  id           String       @id @default(uuid())
   day          DateTime
-  plase        String
-  xCoordinates Float
-  yCoordinates Float
-  Diary        Diary[]
+  place        String?
+  xCoordinate  Float?
+  yCoordinate  Float?
+  diaryEntries DiaryEntry[]
 }
 
-model Author {
-  id       String @id @default(uuid())
-  fullName String
-  typ      String
+model DiaryEntry {
+  id      String  @id @default(uuid())
+  dayId   String?
+  day     Day?    @relation(fields: [dayId], references: [id])
+  author  String
+  content String
 }
