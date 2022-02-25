@@ -6,14 +6,14 @@ import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 
-interface InfoParagraphsProps {
+export interface InfoParagraphsProps {
   Plats?: string
   coords?: [number, number]
   Datum?: string
   stories: any
 }
 
-function InfoParagraphs({
+export function InfoParagraphs({
   Datum,
   coords,
   Plats,
@@ -48,7 +48,7 @@ function InfoParagraphs({
   )
 }
 
-function findBestCoords(index: number): [number, number] {
+export function findBestCoords(index: number): [number, number] {
   for (let i = index; i > 0; i--) {
     if (CalendarData[i].Koordinater)
       return CalendarData[i].Koordinater as [number, number]
@@ -94,6 +94,7 @@ export default function Home() {
         <title>Expedition vanadis</title>
         <link rel="icon" href="/ship.png" />
       </Head>
+
       <div className="flex flex-col overflow-hidden">
         <Map
           position={center}
