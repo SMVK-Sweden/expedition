@@ -1,36 +1,37 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { AiFillHome } from 'react-icons/ai'
+import { AiFillHome, AiOutlineSearch } from 'react-icons/ai'
 import { GiSailboat, GiPositionMarker } from 'react-icons/gi'
 import { FiPhoneCall } from 'react-icons/fi'
 
 import * as AiIcons from 'react-icons/ai'
 import * as GiIcons from 'react-icons/gi'
 import { IconContext } from 'react-icons'
+import { ImDatabase } from 'react-icons/im'
 
 const SidebarData = [
   {
-    title: 'Vanadis info',
-    path: 'https://sv.wikipedia.org/wiki/Vanadis_v%C3%A4rldsomsegling',
+    title: 'Introduktion',
+    path: '/about',
     icon: <GiSailboat />,
     cName: 'nav-text',
   },
   {
-    title: 'Kontakta oss',
-    path: 'https://www.etnografiskamuseet.se/besok/kontakta-oss/',
-    icon: <FiPhoneCall />,
-    cName: 'nav-text',
-  },
-  {
-    title: 'Home',
+    title: 'Idag',
     path: '/',
-    icon: <AiFillHome />,
+    icon: <GiPositionMarker />,
     cName: 'nav-text',
   },
   {
-    title: 'Var är skeppet idag',
-    path: '/position',
-    icon: <GiPositionMarker />,
+    title: 'Ksamsök',
+    path: '/images',
+    icon: <AiOutlineSearch />,
+    cName: 'nav-text',
+  },
+  {
+    title: 'Databas',
+    path: '/api/days',
+    icon: <ImDatabase />,
     cName: 'nav-text',
   },
 ]
@@ -54,7 +55,7 @@ export default function SideBar() {
               return (
                 <li key={index} className={item.cName}>
                   <Link href={item.path}>
-                    <a target="_blank">
+                    <a>
                       {item.icon} <span>{item.title}</span>{' '}
                     </a>
                   </Link>

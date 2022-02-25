@@ -1,9 +1,10 @@
 .navbar {
+  position: absolute;
   height: 60px;
   display: flex;
   justify-content: start;
   align-items: center;
-  z-index: 100;
+  z-index: 2;
 }
 .menu-bars {
   margin-left: 2rem;
@@ -64,4 +65,11 @@
 
 span {
   margin-left: 10px;
+}
+
+.menu-btn {
+  border: 2px solid black;
+  margin: 10px;
+  border-radius: 15%;
+  background: white;
 }
