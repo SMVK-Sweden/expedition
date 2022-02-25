@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { InfoParagraphs } from './index'
 import { todaysTravelDateIndex } from '../shared/utils'
 import CalendarData from '../pages/api/calendar_data.json'
-import * as SiIcons from 'react-icons/Si'
+import { SiOpenstreetmap } from 'react-icons/si'
 
 export default function Home() {
   const [index] = useState(todaysTravelDateIndex())
@@ -29,7 +29,7 @@ export default function Home() {
               stories={stories}
             />
             Se på Kartan{' '}
-            <SiIcons.SiOpenstreetmap onClick={() => <link href="./index" />} />
+            <SiOpenstreetmap onClick={() => <link href="./index" />} />
           </div>
         </div>
       </div>
