@@ -1,6 +1,5 @@
 import useSWR from 'swr'
 //import Info from '../public/about_page.json'
-import CalendarData from '../pages/api/calendar_data.json'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
