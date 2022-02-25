@@ -5,6 +5,7 @@ import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
+import SideBar from '../components/SideBar'
 
 export interface InfoParagraphsProps {
   Plats?: string
@@ -94,6 +95,8 @@ export default function Home() {
         <title>Expedition vanadis</title>
         <link rel="icon" href="/ship.png" />
       </Head>
+
+      <SideBar />
 
       <div className="flex flex-col overflow-hidden">
         <Map
