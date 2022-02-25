@@ -23,8 +23,8 @@ async function main() {
           daySeed.day = new Date(value)
           break
         case 'Koordinater':
-          daySeed.xCoordinate = value[0]
-          daySeed.yCoordinate = value[1]
+          daySeed.latitude = value[0]
+          daySeed.longitude = value[1]
           break
         case 'Plats':
           daySeed.place = value

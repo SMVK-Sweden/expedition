@@ -14,8 +14,8 @@ model Day {
   id           String       @id @default(uuid())
   day          DateTime
   place        String?
-  xCoordinate  Float?
-  yCoordinate  Float?
+  latitude     Float?
+  longitude    Float?
   diaryEntries DiaryEntry[]
 }
 
