@@ -41,9 +41,12 @@ function Map({ position, zoom, markers, clickMarker }: MapProps) {
       center={position}
       zoom={zoom}
       // scrollWheelZoom={false}
-      className="w-full"
       style={{
-        height: '50vh',
+        height: '100px',
+        width: '100px',
+        minHeight: '100%',
+        minWidth: '100%',
+        display: 'block',
       }}
     >
       <TileLayer
