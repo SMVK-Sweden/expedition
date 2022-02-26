@@ -71,24 +71,25 @@ function Map({ position, zoom, markers, clickMarker }: MapProps) {
           )
       })}
 
-      <Polyline
-        positions={
-          markers
-            .map(({ coords }) => coords)
-            .filter((marker, i) => marker && i <= positionIndex) as [
-            LatLngExpression,
-            LatLngExpression
-          ]
-        }
-      />
+        <Polyline
+          positions={
+            markers
+              .map(({ coords }) => coords)
+              .filter((marker, i) => marker && i <= positionIndex) as [
+              LatLngExpression,
+              LatLngExpression
+            ]
+          }
+        />
 
-      <CustomMarker
-        position={position}
-        initialSize={20}
-        eventHandlers={{}}
-        iconUrl="ship.png"
-      />
-    </MapContainer>
+        <CustomMarker
+          position={position}
+          initialSize={20}
+          eventHandlers={{}}
+          iconUrl="ship.png"
+        />
+      </MapContainer>
+    </div>
   )
 }
 

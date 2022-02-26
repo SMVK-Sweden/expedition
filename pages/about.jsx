@@ -6,32 +6,28 @@ import Fetcher from '../components/Fetcher'
 
 import useSWR from 'swr'
 import info from '../pages/api/about_page.json'
+import SideBar from '../components/SideBar'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
-export default function Characters() {
+export default function About() {
   return (
-    <ul>
-      <li>
-        <Button>
-          <Link href="/characters">
-            <a>Characters</a>
-          </Link>
-        </Button>
-        <Link href="/">
-          <Button>Home</Button>
-        </Link>
-        <Fetcher> </Fetcher>
+    <div>
+      <SideBar />
+      <ul>
+        <li>
+          <Fetcher> </Fetcher>
 
-        <p className="text-left md:text-left">
-          {' '}
-          Etnografiska musueet information:{' '}
-        </p>
-        <p className="text-right md:text-right">
-          {' '}
-          Vanadis Expedition sammanfattning:{' '}
-        </p>
-      </li>
-    </ul>
+          <p className="text-left md:text-left">
+            {' '}
+            Etnografiska musueet information:{' '}
+          </p>
+          <p className="text-right md:text-right">
+            {' '}
+            Vanadis Expedition sammanfattning:{' '}
+          </p>
+        </li>
+      </ul>
+    </div>
   )
 }
