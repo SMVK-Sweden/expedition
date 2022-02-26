@@ -99,13 +99,18 @@ export default function Home() {
       <SideBar />
 
       <div className="flex flex-col overflow-hidden">
-        <Map
-          position={center}
-          zoom={4}
-          markers={markers}
-          clickMarker={(i) => setIndex(i)}
-        />
-        <div className="bg-white max-w-6xl w-full m-auto">
+        <div
+          className="w-full max-w-6xl m-auto mt-10"
+          style={{ height: '50vh' }}
+        >
+          <Map
+            position={center}
+            zoom={4}
+            markers={markers}
+            clickMarker={(i) => setIndex(i)}
+          />
+        </div>
+        <div className="bg-white max-w-6xl w-full m-auto mt-30">
           <div className="flex gap-x-2">
             <Button className="flex-auto" onClick={decreaseIndex}>
               igår
