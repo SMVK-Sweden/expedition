@@ -96,7 +96,7 @@ export default function Home() {
       </Head>
 
       <div className="flex flex-col overflow-hidden">
-        <div className="w-full max-w-6xl m-auto h-50">
+        <div className="w-full max-w-6xl m-auto" style={{ height: '50vh' }}>
           <Map
             position={center}
             zoom={4}
