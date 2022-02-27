@@ -5,6 +5,9 @@ import { Marker } from '../components/Map/Map'
 import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
+import { GetStaticProps } from 'next'
+
+export const getStaticProps: GetStaticProps = async () => {}
 
 interface InfoParagraphsProps {
   Plats?: string
@@ -60,7 +63,7 @@ function findBestCoords(index: number): [number, number] {
   return [0, 0]
 }
 
-export default function Home() {
+export default function Home({ data }) {
   const [index, setIndex] = useState(todaysTravelDateIndex())
   const currentCalendarData = CalendarData[index]
   const center: [number, number] =
