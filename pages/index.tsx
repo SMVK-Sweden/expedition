@@ -6,6 +6,7 @@ import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 import SideBar from '../components/SideBar'
+import OldMap from '../components/OldMap'
 
 export interface InfoParagraphsProps {
   Plats?: string
@@ -103,12 +104,14 @@ export default function Home() {
           className="w-full max-w-6xl m-auto mt-10"
           style={{ height: '50vh' }}
         >
-          <Map
+          {/* <Map
             position={center}
             zoom={4}
             markers={markers}
             clickMarker={(i) => setIndex(i)}
-          />
+          /> */}
+
+          <OldMap />
         </div>
         <div className="bg-white max-w-6xl w-full m-auto mt-30">
           <div className="flex gap-x-2">
