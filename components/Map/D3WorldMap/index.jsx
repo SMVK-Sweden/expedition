@@ -10,7 +10,7 @@ const Country = (data, pathGenerator) => {
     <path
       key={data.properties.subunit}
       d={pathGenerator(data)}
-      fill="#EDE3C6"
+      fill="#E0C9A6"
       stroke="white"
       strokeOpacity={hover ? '0.8' : '0.1'}
       onMouseEnter={() => setHover(true)}
@@ -21,7 +21,7 @@ const Country = (data, pathGenerator) => {
   )
 }
 
-const D3WorldMap = ({ boatCoordinates, path }) => {
+export default function D3WorldMap({ boatCoordinates, path }) {
   // change position props to [lon, lat] format
   const boatLonLat = [boatCoordinates[1], boatCoordinates[0]]
   const pathLonLat = path.map((coords) => [coords[1], coords[0]])
@@ -60,10 +60,6 @@ const D3WorldMap = ({ boatCoordinates, path }) => {
           <clipPath id="Map__sphere">
             <path d={pathGenerator(sphere)} />
           </clipPath>
-
-          {/* <filter id="noise">
-            <feTurbulence baseFrequency={0.05} />
-          </filter> */}
         </defs>
 
         <path d={pathGenerator(sphere)} fill="#F6F1E3" />
@@ -78,7 +74,7 @@ const D3WorldMap = ({ boatCoordinates, path }) => {
           />
 
           {countryShapes.features.map((shape) => Country(shape, pathGenerator))}
-          <circle cx={`${boatPos[0]}`} cy={`${boatPos[1]}`} r="5" fill="red" />
+          <circle cx={`${boatPos[0]}`} cy={`${boatPos[1]}`} r="3" fill="red" />
           <path
             d={pathGenerator({
               type: 'Feature',
@@ -96,4 +92,46 @@ const D3WorldMap = ({ boatCoordinates, path }) => {
   )
 }
 
-export default D3WorldMap
+export function OldMap({ boatCoordinates, path }) {
+  return (
+    <div className="bg-white max-w-6xl w-full m-auto">
+      <div className="py-3 w-9/12 m-auto relative">
+        <div
+          style={{
+            filter: 'url(#wavy)',
+            boxShadow: 'inset 0px 0px 40px black',
+            position: 'relative',
+            display: 'block',
+            zIndex: '2',
+          }}
+        >
+          <D3WorldMap boatCoordinates={boatCoordinates} path={path} />
+        </div>
+        <div
+          style={{
+            boxShadow: '10px 10px 40px black',
+            position: 'absolute',
+            top: '5%',
+            left: '5%',
+            height: '90%',
+            width: '90%',
+          }}
+        ></div>
+      </div>
+      <div style={{ display: 'none' }}>
+        <svg>
+          <filter id="wavy">
+            <feTurbulence
+              x="0"
+              y="0"
+              baseFrequency="0.02"
+              numOctaves="3"
+              seed="1"
+            ></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" scale="10" />
+          </filter>
+        </svg>
+      </div>
+    </div>
+  )
+}

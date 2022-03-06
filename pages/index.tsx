@@ -1,12 +1,18 @@
 import { useState } from 'react'
 import Head from 'next/head'
-// import Map from '../components/Map'
+import LeafletMap from '../components/Map/LeafletMap'
 // import { Marker } from '../components/Map/LeafletMap/CustomMarker'
 import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 import SideBar from '../components/SideBar'
-import D3WorldMap from '../components/Map/D3WorldMap'
+import { OldMap } from '../components/Map/D3WorldMap'
+
+interface Marker {
+  index: number
+  coords: [number, number]
+  hasInformation: boolean
+}
 
 export interface InfoParagraphsProps {
   Plats?: string
@@ -105,68 +111,46 @@ export default function Home() {
       <SideBar />
 
       <div className="flex flex-col overflow-hidden">
-        {/* <div
+        <div
           className="w-full max-w-6xl m-auto mt-10"
           style={{ height: '50vh' }}
         >
-          <Map
+          <LeafletMap
             position={center}
             zoom={4}
             markers={markers}
             clickMarker={(i) => setIndex(i)}
           />
-        </div> */}
-        <div className="bg-white max-w-6xl w-full m-auto">
-          <div>
-            <div
-              style={{
-                filter: 'url(#wavy2)',
-              }}
-              className="pt-3 w-9/12 m-auto"
-            >
-              <D3WorldMap boatCoordinates={Koordinater} path={path} />
-            </div>
-          </div>
-
-          <div className="flex gap-x-2">
-            <Button className="flex-auto" onClick={decreaseIndex}>
-              igår
-            </Button>
-            <Button className="flex-auto" onClick={increaseIndex}>
-              imorgon
-            </Button>
-          </div>
-          <input
-            className="w-full p-4"
-            type="range"
-            value={index}
-            min={0}
-            max={CalendarData.length - 1}
-            onChange={(e) => setIndex(parseInt(e.target.value))}
-          />
-          <div className="w-full my-12">
-            <InfoParagraphs
-              coords={coords}
-              Plats={Plats}
-              Datum={Datum}
-              stories={stories}
-            />
-          </div>
         </div>
+
+        <div className="flex gap-x-2">
+          <Button className="flex-auto" onClick={decreaseIndex}>
+            igår
+          </Button>
+          <Button className="flex-auto" onClick={increaseIndex}>
+            imorgon
+          </Button>
+        </div>
+        <input
+          className="w-full p-4"
+          type="range"
+          value={index}
+          min={0}
+          max={CalendarData.length - 1}
+          onChange={(e) => setIndex(parseInt(e.target.value))}
+        />
+
+        <div className="w-full my-12">
+          <InfoParagraphs
+            coords={coords}
+            Plats={Plats}
+            Datum={Datum}
+            stories={stories}
+          />
+        </div>
+
+        <OldMap boatCoordinates={Koordinater} path={path} />
       </div>
-      {/* skapar noise till kartan. just nu appliceras den på allt, inklusive marker och länder*/}
-      <svg>
-        <filter id="wavy2">
-          <feTurbulence
-            x="0"
-            y="0"
-            baseFrequency="0.02"
-            numOctaves="3"
-            seed="1"
-          ></feTurbulence>
-          <feDisplacementMap in="SourceGraphic" scale="10" />
-        </filter>
-      </svg>
     </div>
   )
 }
