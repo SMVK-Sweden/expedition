@@ -6,7 +6,7 @@ import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 import SideBar from '../components/SideBar'
-import OldMap from '../components/OldMap'
+import D3WorldMap from '../components/D3WorldMap'
 
 export interface InfoParagraphsProps {
   Plats?: string
@@ -90,6 +90,11 @@ export default function Home() {
 
   const coords = Koordinater as [number, number]
 
+  // generate a path of the past coordinates
+  const path = CalendarData.filter((elem, elemIndex) => elemIndex < index)
+    .filter((elem) => elem.Koordinater)
+    .map((elem) => elem.Koordinater)
+
   return (
     <div>
       <Head>
@@ -110,8 +115,7 @@ export default function Home() {
             markers={markers}
             clickMarker={(i) => setIndex(i)}
           /> */}
-
-          <OldMap />
+          <D3WorldMap boatCoordinates={Koordinater} path={path} />
         </div>
         <div className="bg-white max-w-6xl w-full m-auto mt-30">
           <div className="flex gap-x-2">
