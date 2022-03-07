@@ -7,6 +7,7 @@ import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 import SideBar from '../components/SideBar'
 import { OldMap } from '../components/Map/D3WorldMap'
+import CanvasMap, { OldCanvasMap } from '../components/Map/CanvasMap'
 
 interface Marker {
   index: number
@@ -150,6 +151,8 @@ export default function Home() {
         </div>
 
         <OldMap boatCoordinates={Koordinater} path={path} />
+
+        <OldCanvasMap />
       </div>
     </div>
   )

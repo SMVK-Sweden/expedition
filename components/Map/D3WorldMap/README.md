@@ -24,3 +24,9 @@ Det kan vara så att den blir långsam på t.ex mobiler. Det är rätt många sv
 ## idéer
 
 man kanske bara skulle rita ut landmasasn utan att ladda in alla länder för det såg väl lite anorlunda ut på 1880-talet. Man skulle då kunna lägga in städer osv som båten besöker manuellt på kartan.
+
+## låta d3 rita kartan
+
+https://medium.com/@jeffbutsch/using-d3-in-react-with-hooks-4a6c61f1d102
+https://www.jasondavies.com/maps/rotate/
+https://www.demo2s.com/javascript/javascript-d3-js-clickable-transparent-3d-world-map-canvas-globe-mouse.html

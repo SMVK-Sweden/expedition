@@ -93,6 +93,7 @@ export default function D3WorldMap({ boatCoordinates, path }) {
 }
 
 export function OldMap({ boatCoordinates, path }) {
+  console.log(boatCoordinates, path)
   return (
     <div className="bg-white max-w-6xl w-full m-auto">
       <div className="py-3 w-9/12 m-auto relative">
