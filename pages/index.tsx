@@ -152,7 +152,7 @@ export default function Home() {
 
         <OldMap boatCoordinates={Koordinater} path={path} />
 
-        <OldCanvasMap />
+        <OldCanvasMap boatCoordinates={Koordinater} path={path} />
       </div>
     </div>
   )

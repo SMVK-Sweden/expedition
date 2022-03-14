@@ -1,9 +1,25 @@
 import * as d3 from 'd3'
 import { useRef, useEffect } from 'react'
-import countries from './data/subunits_medium.json'
+import countries from './data/subunits_small.json'
 
-export default function CanvasMap() {
+// https://programmingwithmosh.com/javascript/javascript-throttle-and-debounce-patterns/
+function throttle(callback, interval) {
+  let enableCall = true
+
+  return function (...args) {
+    if (!enableCall) return
+
+    enableCall = false
+    callback.apply(this, args)
+    setTimeout(() => (enableCall = true), interval)
+  }
+}
+
+export default function CanvasMap({ boatCoordinates, path }) {
   const ref = useRef(null)
+  // change position props to [lon, lat] format
+  const boatLonLat = [boatCoordinates[1], boatCoordinates[0]]
+  const pathLonLat = path.map((coords) => [coords[1], coords[0]])
 
   useEffect(() => {
     if (ref.current) {
@@ -15,7 +31,7 @@ export default function CanvasMap() {
 
       let context = canvas.node().getContext('2d')
 
-      let projection = d3.geoEquirectangular().scale(150)
+      let projection = d3.geoEquirectangular()
 
       let geoGenerator = d3
         .geoPath()
@@ -23,15 +39,18 @@ export default function CanvasMap() {
         .pointRadius(4)
         .context(context)
 
-      canvas.on('click', (e) => {
-        const mouse = d3.pointer(e)
-        console.log(projection.invert(mouse))
-      })
+      // does not update everytime
+      let mouse_pos = []
+      canvas.on(
+        'mousemove',
+        throttle((e) => {
+          const mouse = d3.pointer(e)
+          mouse_pos = projection.invert(mouse)
+          update()
+        }, 30)
+      )
 
-      let yaw = 300
-      let i = 0
       const update = () => {
-        // projection.rotate([yaw, -45])
         // clear the canvas
         context.fillStyle = '#ffffff'
         context.clearRect(0, 0, 800, 800)
@@ -40,51 +59,73 @@ export default function CanvasMap() {
         geoGenerator({ type: 'Sphere' })
         context.fillStyle = '#F6F1E3'
         context.fill()
+
         // Graticule
         let graticule = d3.geoGraticule()
         context.beginPath()
         context.lineWidth = 0.3
-        context.strokeStyle = '#cccccc'
+        context.strokeStyle = '#fff'
         geoGenerator(graticule())
         context.stroke()
 
         // draw the countries
-        // one by one
-        i++
-        if (i > countries.features.length) i = 0
-        countries.features.forEach((country, index) => {
+        countries.features.forEach((country) => {
           context.lineWidth = 0.2
           context.strokeStyle = '#ffffff'
           context.fillStyle = '#E0C9A6'
-          if (i == index) context.fillStyle = 'red'
+
+          // event handling on the canvas
+          if (d3.geoContains(country, mouse_pos)) {
+            context.lineWidth = 2
+            console.log(country)
+          }
 
           context.beginPath()
           geoGenerator(country)
           context.fill()
           context.stroke()
         })
+
+        // draw path
+        geoGenerator({
+          type: 'Feature',
+          geometry: { type: 'LineString', coordinates: pathLonLat },
+        })
+        context.strokeStyle = 'black'
+        context.setLineDash([5, 5])
+        context.stroke()
+
+        // mark the boat position
+        context.beginPath()
+        context.arc(boatLonLat[0], boatLonLat[1], 5, 0, Math.PI * 2)
+        context.fillStyle = 'red'
+        context.fill()
       }
-      setInterval(update, 67)
+
+      // initialize the canvas
+      update()
     }
   }, []) //ska man ha ref.current som dependency?
 
-  return <div ref={ref}></div>
+  return <div ref={ref} className="w-full h-full"></div>
 }
 
-export function OldCanvasMap() {
+export function OldCanvasMap({ boatCoordinates, path }) {
   return (
-    <div className="bg-white max-w-6xl w-full m-auto">
-      <div className="py-3 w-9/12 m-auto relative">
+    <div>
+      <div className="py-3 w-9/12 m-auto relative border-blue-500">
         <div
-          style={{
-            filter: 'url(#wavy)',
-            // boxShadow: 'inset 0px 0px 40px black',
-            // position: 'relative',
-            // display: 'block',
-            // zIndex: '2',
-          }}
+          style={
+            {
+              // filter: 'url(#wavy)',
+              // boxShadow: 'inset 0px 0px 40px black',
+              // position: 'relative',
+              // display: 'block',
+              // zIndex: '2',
+            }
+          }
         >
-          <CanvasMap />
+          <CanvasMap boatCoordinates={boatCoordinates} path={path} />
         </div>
         {/* <div
           style={{
