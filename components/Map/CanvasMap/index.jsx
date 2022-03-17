@@ -1,19 +1,7 @@
 import * as d3 from 'd3'
 import { useRef, useEffect } from 'react'
+import { throttle } from '../../../shared/utils'
 import countries from './data/subunits_small.json'
-
-// https://programmingwithmosh.com/javascript/javascript-throttle-and-debounce-patterns/
-function throttle(callback, interval) {
-  let enableCall = true
-
-  return function (...args) {
-    if (!enableCall) return
-
-    enableCall = false
-    callback.apply(this, args)
-    setTimeout(() => (enableCall = true), interval)
-  }
-}
 
 export default function CanvasMap({ boatCoordinates, path }) {
   const ref = useRef(null)
@@ -21,39 +9,58 @@ export default function CanvasMap({ boatCoordinates, path }) {
   const boatLonLat = [boatCoordinates[1], boatCoordinates[0]]
   const pathLonLat = path.map((coords) => [coords[1], coords[0]])
 
+  let width, height
+  if (ref.current) {
+    width = ref.current.parentElement.clientWidth
+    height = ref.current.parentElement.clientHeight
+  }
+
   useEffect(() => {
     if (ref.current) {
       let canvas = d3
         .select(ref.current)
-        .append('canvas')
-        .attr('width', 800)
-        .attr('height', 800)
+        .attr('width', width)
+        .attr('height', height)
+
+      canvas.node().style = 'width:100%;height:100%;'
 
       let context = canvas.node().getContext('2d')
 
-      let projection = d3.geoEquirectangular()
+      // let projectionChoice = d3.geoEquirectangular() // liknar printade kartor
+      // let projectionChoice = d3.geoOrthographic() // jordglob
+      // let projectionChoice = d3.geoMercator() // samma som goole maps
+      let projectionChoice = d3.geoEqualEarth() // bra representation av länders storlek, men eliptisk
+
+      let projection = projectionChoice.scale(1000).center(boatLonLat)
 
       let geoGenerator = d3
         .geoPath()
         .projection(projection)
-        .pointRadius(4)
+        .pointRadius(20)
         .context(context)
 
-      // does not update everytime
-      let mouse_pos = []
-      canvas.on(
-        'mousemove',
-        throttle((e) => {
-          const mouse = d3.pointer(e)
-          mouse_pos = projection.invert(mouse)
-          update()
-        }, 30)
-      )
+      // zoom handler
+      const zoom = d3
+        .zoom()
+        // .translateExtent([0, 0], [width, height])
+        // .scaleExtent([100, 1000])
+        .on('zoom', (e) => {
+          draw(e.transform)
+        })
+      canvas.call(zoom)
 
-      const update = () => {
+      const draw = (t) => {
         // clear the canvas
         context.fillStyle = '#ffffff'
-        context.clearRect(0, 0, 800, 800)
+        context.strokeStyle = '#ffffff'
+        context.setLineDash([])
+        context.beginPath()
+        context.clearRect(0, 0, width, height)
+
+        // save the old context and apply a transformation
+        context.save()
+        context.translate(t.x, t.y)
+        context.scale(t.k / 2, t.k / 2)
 
         // draw the earths background (the ocean will have this color)
         geoGenerator({ type: 'Sphere' })
@@ -64,7 +71,6 @@ export default function CanvasMap({ boatCoordinates, path }) {
         let graticule = d3.geoGraticule()
         context.beginPath()
         context.lineWidth = 0.3
-        context.strokeStyle = '#fff'
         geoGenerator(graticule())
         context.stroke()
 
@@ -74,12 +80,6 @@ export default function CanvasMap({ boatCoordinates, path }) {
           context.strokeStyle = '#ffffff'
           context.fillStyle = '#E0C9A6'
 
-          // event handling on the canvas
-          if (d3.geoContains(country, mouse_pos)) {
-            context.lineWidth = 2
-            console.log(country)
-          }
-
           context.beginPath()
           geoGenerator(country)
           context.fill()
@@ -87,43 +87,53 @@ export default function CanvasMap({ boatCoordinates, path }) {
         })
 
         // draw path
+        context.beginPath()
         geoGenerator({
           type: 'Feature',
           geometry: { type: 'LineString', coordinates: pathLonLat },
         })
-        context.strokeStyle = 'black'
+        context.strokeStyle = 'rgba(0, 0, 0, 0.5)'
+        context.lineWidth = 1
         context.setLineDash([5, 5])
         context.stroke()
 
         // mark the boat position
         context.beginPath()
-        context.arc(boatLonLat[0], boatLonLat[1], 5, 0, Math.PI * 2)
+        geoGenerator({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: boatLonLat },
+        })
         context.fillStyle = 'red'
         context.fill()
+
+        // restore the canvas context
+        context.restore()
       }
 
       // initialize the canvas
-      update()
+      draw({ k: 1, x: 0, y: 0 })
     }
-  }, []) //ska man ha ref.current som dependency?
+  }, [boatLonLat, pathLonLat, width, height])
 
-  return <div ref={ref} className="w-full h-full"></div>
+  return (
+    <div className="w-full h-full">
+      <canvas ref={ref}></canvas>
+    </div>
+  )
 }
 
 export function OldCanvasMap({ boatCoordinates, path }) {
   return (
     <div>
-      <div className="py-3 w-9/12 m-auto relative border-blue-500">
+      <div className="relative">
         <div
-          style={
-            {
-              // filter: 'url(#wavy)',
-              // boxShadow: 'inset 0px 0px 40px black',
-              // position: 'relative',
-              // display: 'block',
-              // zIndex: '2',
-            }
-          }
+          style={{
+            filter: 'url(#wavy)',
+            // boxShadow: 'inset 0px 0px 40px black',
+            // position: 'relative',
+            // display: 'block',
+            // zIndex: '2',
+          }}
         >
           <CanvasMap boatCoordinates={boatCoordinates} path={path} />
         </div>

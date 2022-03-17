@@ -6,7 +6,6 @@ import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 import SideBar from '../components/SideBar'
-import { OldMap } from '../components/Map/D3WorldMap'
 import CanvasMap, { OldCanvasMap } from '../components/Map/CanvasMap'
 
 interface Marker {
@@ -97,11 +96,6 @@ export default function Home() {
 
   const coords = Koordinater as [number, number]
 
-  // generate a path of the past coordinates
-  const path = CalendarData.filter((elem, elemIndex) => elemIndex < index)
-    .filter((elem) => elem.Koordinater)
-    .map((elem) => elem.Koordinater)
-
   return (
     <div>
       <Head>
@@ -113,7 +107,7 @@ export default function Home() {
 
       <div className="flex flex-col overflow-hidden">
         <div
-          className="w-full max-w-6xl m-auto mt-10"
+          className="w-full max-w-6xl m-auto mt-6"
           style={{ height: '50vh' }}
         >
           <LeafletMap
@@ -149,10 +143,6 @@ export default function Home() {
             stories={stories}
           />
         </div>
-
-        <OldMap boatCoordinates={Koordinater} path={path} />
-
-        <OldCanvasMap boatCoordinates={Koordinater} path={path} />
       </div>
     </div>
   )

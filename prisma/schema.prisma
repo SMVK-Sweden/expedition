@@ -12,7 +12,7 @@ datasource db {
 
 model Day {
   id           String       @id @default(uuid())
-  day          DateTime
+  date         DateTime
   place        String?
   latitude     Float?
   longitude    Float?
