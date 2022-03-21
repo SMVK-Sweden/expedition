@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import { useRef, useEffect, useState } from 'react'
-import countries from './data/subunits_small.json'
+import countries from './data/world_1880.json'
 import { throttle } from 'throttle-debounce'
 
 export default function CanvasMap({ boatCoordinates, path }) {
@@ -105,7 +105,11 @@ export default function CanvasMap({ boatCoordinates, path }) {
           let pos = projection(d3.geoCentroid(country))
           context.fillStyle = 'rgba(0, 0, 0, .5)'
           context.font = '20px sans-serif'
-          context.fillText(country.properties.NAME_SV, pos[0], pos[1])
+          context.fillText(
+            country.properties.NAME_SV || country.properties.NAME || '',
+            pos[0],
+            pos[1]
+          )
         })
 
         // draw path
