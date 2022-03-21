@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import LeafletMap from './LeafletMap'
-import D3WorldMap from './D3WorldMap'
+import SvgMap from './SvgMap'
 import ComponentToggle from '../ComponentToggle'
 
 interface Marker {
@@ -26,7 +26,7 @@ export default function Map({
 }: MapProps) {
   return (
     <ComponentToggle
-      component1={<D3WorldMap boatCoordinates={boatPos} path={path} />}
+      component1={<SvgMap boatCoordinates={boatPos} path={path} />}
       title1="gammal karta"
       component2={
         <LeafletMap

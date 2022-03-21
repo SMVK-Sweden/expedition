@@ -27,6 +27,7 @@
     "react-icons": "^4.3.1",
     "react-leaflet": "^3.2.5",
     "swr": "^1.2.2",
+    "throttle-debounce": "^3.0.1",
     "topojson": "^3.0.2",
     "ts-node": "^10.5.0",
     "usehooks-ts": "^2.4.2",

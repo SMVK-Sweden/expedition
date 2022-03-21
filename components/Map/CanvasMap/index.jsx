@@ -1,19 +1,24 @@
 import * as d3 from 'd3'
-import { useRef, useEffect } from 'react'
-import { throttle } from '../../../shared/utils'
+import { useRef, useEffect, useState } from 'react'
 import countries from './data/subunits_small.json'
+import { throttle } from 'throttle-debounce'
 
 export default function CanvasMap({ boatCoordinates, path }) {
   const ref = useRef(null)
+  const [dimensions, setDimenstions] = useState([0, 0])
+  const [width, height] = dimensions
   // change position props to [lon, lat] format
   const boatLonLat = [boatCoordinates[1], boatCoordinates[0]]
   const pathLonLat = path.map((coords) => [coords[1], coords[0]])
 
-  let width, height
-  if (ref.current) {
-    width = ref.current.parentElement.clientWidth
-    height = ref.current.parentElement.clientHeight
+  // apply dimensions if not set
+  if (ref.current && !width) {
+    const w = ref.current.parentElement.clientWidth
+    const h = ref.current.parentElement.clientHeight
+    setDimenstions([w, h])
   }
+
+  console.log(countries)
 
   useEffect(() => {
     if (ref.current) {
@@ -22,7 +27,7 @@ export default function CanvasMap({ boatCoordinates, path }) {
         .attr('width', width)
         .attr('height', height)
 
-      canvas.node().style = 'width:100%;height:100%;'
+      //canvas.node().style = 'width:100%;height:100%;'
 
       let context = canvas.node().getContext('2d')
 
@@ -39,28 +44,37 @@ export default function CanvasMap({ boatCoordinates, path }) {
         .pointRadius(20)
         .context(context)
 
-      // zoom handler
+      // zoom events
+      // zoom events can fire to often
+      // so the number of redraws of the
+      // canvas needs to be limited
+      const zoomHandler = throttle(50, false, (e) => {
+        // clear the whole canvas
+        context.fillStyle = '#ffffff'
+        context.beginPath()
+        context.clearRect(0, 0, width, height)
+        // save the old context and apply a transformation
+        context.save()
+        const t = e.transform
+        context.translate(t.x, t.y)
+        context.scale(t.k / 2, t.k / 2)
+        // draw the map with the transformations applied
+        draw()
+        // restore the canvas context
+        context.restore()
+      })
       const zoom = d3
         .zoom()
         // .translateExtent([0, 0], [width, height])
         // .scaleExtent([100, 1000])
-        .on('zoom', (e) => {
-          draw(e.transform)
-        })
+        .on('zoom', zoomHandler)
       canvas.call(zoom)
 
-      const draw = (t) => {
+      const draw = () => {
         // clear the canvas
         context.fillStyle = '#ffffff'
         context.strokeStyle = '#ffffff'
         context.setLineDash([])
-        context.beginPath()
-        context.clearRect(0, 0, width, height)
-
-        // save the old context and apply a transformation
-        context.save()
-        context.translate(t.x, t.y)
-        context.scale(t.k / 2, t.k / 2)
 
         // draw the earths background (the ocean will have this color)
         geoGenerator({ type: 'Sphere' })
@@ -86,13 +100,21 @@ export default function CanvasMap({ boatCoordinates, path }) {
           context.stroke()
         })
 
+        // country name
+        countries.features.forEach((country) => {
+          let pos = projection(d3.geoCentroid(country))
+          context.fillStyle = 'rgba(0, 0, 0, .5)'
+          context.font = '20px sans-serif'
+          context.fillText(country.properties.NAME_SV, pos[0], pos[1])
+        })
+
         // draw path
         context.beginPath()
         geoGenerator({
           type: 'Feature',
           geometry: { type: 'LineString', coordinates: pathLonLat },
         })
-        context.strokeStyle = 'rgba(0, 0, 0, 0.5)'
+        context.strokeStyle = 'rgba(0, 0, 0, 0.8)'
         context.lineWidth = 1
         context.setLineDash([5, 5])
         context.stroke()
@@ -105,13 +127,10 @@ export default function CanvasMap({ boatCoordinates, path }) {
         })
         context.fillStyle = 'red'
         context.fill()
-
-        // restore the canvas context
-        context.restore()
       }
 
       // initialize the canvas
-      draw({ k: 1, x: 0, y: 0 })
+      draw()
     }
   }, [boatLonLat, pathLonLat, width, height])
 
