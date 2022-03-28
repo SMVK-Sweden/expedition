@@ -9,6 +9,8 @@ import {
   readSorroundingDates,
   yearMonthDay,
 } from '../../prisma/models/day'
+import { useState } from 'react'
+import RadioButton from '../../components/RadioButton'
 
 interface DayProps {
   date: string
@@ -29,6 +31,8 @@ export default function Day({
   yesterdayDate,
   tomorrowDate,
 }: DayProps) {
+  const [oldMap, setOldMap] = useState(true)
+
   const diaryEntryTags = diaryEntries
     ? diaryEntries.map((entry: any) => (
         <div className="border-2 rounded-lg" key={date}>
@@ -54,12 +58,23 @@ export default function Day({
           day: 'numeric',
         })}
       </p>
-      <div className="" style={{ height: '50vh' }}>
+      <div style={{ height: '50vh' }}>
         <CanvasMap
           boatCoordinates={[latitude, longitude]}
           path={traveledPath}
+          oldMap={oldMap}
         />
       </div>
+      <RadioButton
+        options={['1880', '2022']}
+        value="1880"
+        onChange={(e) => {
+          console.log(e.target.value)
+          const value = e.target.value
+          if (value == '1880') setOldMap(true)
+          else setOldMap(false)
+        }}
+      />
       <div className="flex gap-x-2">
         <Link href={yesterdayDate ? `/days/${yesterdayDate}` : ''}>
           <Button

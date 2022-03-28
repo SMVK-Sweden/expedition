@@ -1,9 +1,13 @@
 import * as d3 from 'd3'
 import { useRef, useEffect, useState } from 'react'
-import countries from './data/world_1880.json'
+import modernCountries from './data/subunits_small.json'
+import oldCountries from './data/world_1880.json'
 import { throttle } from 'throttle-debounce'
 
-export default function CanvasMap({ boatCoordinates, path }) {
+export default function CanvasMap({ boatCoordinates, path, oldMap }) {
+  // chose which map to show
+  const countries = oldMap ? oldCountries : modernCountries
+  // get d3 working
   const ref = useRef(null)
   const [dimensions, setDimenstions] = useState([0, 0])
   const [width, height] = dimensions
@@ -17,8 +21,6 @@ export default function CanvasMap({ boatCoordinates, path }) {
     const h = ref.current.parentElement.clientHeight
     setDimenstions([w, h])
   }
-
-  console.log(countries)
 
   useEffect(() => {
     if (ref.current) {
@@ -136,7 +138,7 @@ export default function CanvasMap({ boatCoordinates, path }) {
       // initialize the canvas
       draw()
     }
-  }, [boatLonLat, pathLonLat, width, height])
+  }, [boatLonLat, pathLonLat, dimensions])
 
   return (
     <div className="w-full h-full">
