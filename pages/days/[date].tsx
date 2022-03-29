@@ -116,18 +116,20 @@ export async function getStaticProps({ params }: any) {
   const others = await readAllDayCoordinatesBefore(params.date)
   const [yesterday, tomorrow] = await readSorroundingDates(params.date)
 
-  return {
-    props: {
-      date: day ? yearMonthDay(day?.date) : null,
-      latitude: day ? day.latitude : null,
-      longitude: day ? day.longitude : null,
-      diaryEntries: day ? day.diaryEntries : null,
-      previousDays: others.map((other) => ({
-        date: yearMonthDay(other.date),
-        coordinates: [other.latitude, other.longitude],
-      })),
-      yesterdayDate: yesterday ? yearMonthDay(yesterday.date) : null,
-      tomorrowDate: tomorrow ? yearMonthDay(tomorrow.date) : null,
-    },
+  if (day) {
+    return {
+      props: {
+        date: day ? yearMonthDay(day.date) : null,
+        latitude: day ? day.latitude : null,
+        longitude: day ? day.longitude : null,
+        diaryEntries: day ? day.diaryEntries : null,
+        previousDays: others.map((other) => ({
+          date: yearMonthDay(other.date),
+          coordinates: [other.latitude, other.longitude],
+        })),
+        yesterdayDate: yesterday ? yearMonthDay(yesterday.date) : null,
+        tomorrowDate: tomorrow ? yearMonthDay(tomorrow.date) : null,
+      },
+    }
   }
 }
