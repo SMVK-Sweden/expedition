@@ -111,7 +111,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: any) {
-  const day = await readDayFromDate(params.date)
+  const day = (await readDayFromDate(params.date)) as Day
 
   const others = await readAllDayCoordinatesBefore(params.date)
   const [yesterday, tomorrow] = await readSorroundingDates(params.date)
