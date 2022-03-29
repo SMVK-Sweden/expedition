@@ -10,6 +10,7 @@ export interface DayModel {
   diaryEntries: DiaryEntry[]
 }
 
+// test
 export async function readDayFromDate(date: Date | string) {
   const theDate = new Date(date)
   const day = await prisma.day.findFirst({
