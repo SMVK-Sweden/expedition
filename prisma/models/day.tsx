@@ -42,7 +42,7 @@ export async function readTraveledPath(date: string | Date) {
   })
   const path = days
     .filter((day) => day.longitude && day.latitude)
-    .map((day) => [day.longitude, day.latitude])
+    .map((day) => [day.latitude, day.longitude])
 
   return path as [number, number][]
 }
