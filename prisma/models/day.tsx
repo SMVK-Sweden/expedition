@@ -13,7 +13,7 @@ export interface DayModel {
 export async function readDayFromDate(date: string | Date) {
   const day = await prisma.day.findFirst({
     where: {
-      date: new Date(date),
+      date: { equals: new Date(date) },
     },
     include: { diaryEntries: true },
   })
