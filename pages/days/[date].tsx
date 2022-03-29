@@ -3,55 +3,43 @@ import CanvasMap from '../../components/Map/CanvasMap'
 import Button from '../../components/Button'
 import Link from 'next/link'
 import {
-  readAllDayCoordinatesBefore,
+  readTraveledPath,
   readDayFromDate,
   readAllDayDates,
-  readSorroundingDates,
+  readSorroundingDateStrings,
   yearMonthDay,
+  DayModel,
 } from '../../prisma/models/day'
 import { useState } from 'react'
 import RadioButton from '../../components/RadioButton'
+import { DiaryEntry } from '@prisma/client'
 
 interface DayProps {
-  date: string
-  latitude?: number
-  longitude?: number
-  diaryEntries?: any
-  previousDays?: any
+  day: DayModel
+  path: [number, number][]
   yesterdayDate?: string
   tomorrowDate?: string
 }
 
 export default function Day({
-  date,
-  latitude,
-  longitude,
-  diaryEntries,
-  previousDays,
+  day,
+  path,
   yesterdayDate,
   tomorrowDate,
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
 
-  const diaryEntryTags = diaryEntries
-    ? diaryEntries.map((entry: any) => (
-        <div className="border-2 rounded-lg" key={date}>
-          <p className="font-bold">{entry.author}</p>
-          <p>{entry.content}</p>
-        </div>
-      ))
-    : []
-
-  // a list of coordinates that has been visited
-  // (some days have no coordinates)
-  const traveledPath = previousDays
-    .filter((d: any) => d.coordinates[0])
-    .map((d: any) => d.coordinates)
+  const diaryEntryTags = day.diaryEntries?.map((entry: DiaryEntry) => (
+    <div className="border-2 rounded-lg" key={entry.id}>
+      <p className="font-bold">{entry.author}</p>
+      <p>{entry.content}</p>
+    </div>
+  ))
 
   return (
     <div className="w-full max-w-6xl m-auto mt-6">
       <p>
-        {new Date(date).toLocaleDateString('sv-SE', {
+        {new Date(day.date).toLocaleDateString('sv-SE', {
           weekday: 'long',
           year: 'numeric',
           month: 'long',
@@ -60,8 +48,8 @@ export default function Day({
       </p>
       <div style={{ height: '50vh' }}>
         <CanvasMap
-          boatCoordinates={[latitude, longitude]}
-          path={traveledPath}
+          boatCoordinates={[day.latitude, day.longitude]}
+          path={path}
           oldMap={oldMap}
         />
       </div>
@@ -110,25 +98,25 @@ export async function getStaticPaths() {
   }
 }
 
-export async function getStaticProps({ params }: any) {
-  const day = (await readDayFromDate(params.date)) as Day
+interface staticPropsParams {
+  params: {
+    date: string
+  }
+}
 
-  const others = await readAllDayCoordinatesBefore(params.date)
-  const [yesterday, tomorrow] = await readSorroundingDates(params.date)
+export async function getStaticProps({ params }: staticPropsParams) {
+  const day = await readDayFromDate(params.date)
+
+  const path = await readTraveledPath(params.date)
+  const [yesterday, tomorrow] = await readSorroundingDateStrings(params.date)
 
   if (day) {
     return {
       props: {
-        date: day ? yearMonthDay(day.date) : null,
-        latitude: day ? day.latitude : null,
-        longitude: day ? day.longitude : null,
-        diaryEntries: day ? day.diaryEntries : null,
-        previousDays: others.map((other) => ({
-          date: yearMonthDay(other.date),
-          coordinates: [other.latitude, other.longitude],
-        })),
-        yesterdayDate: yesterday ? yearMonthDay(yesterday.date) : null,
-        tomorrowDate: tomorrow ? yearMonthDay(tomorrow.date) : null,
+        day: day,
+        path: path,
+        yesterdayDate: yesterday,
+        tomorrowDate: tomorrow,
       },
     }
   }

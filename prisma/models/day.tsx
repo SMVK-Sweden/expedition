@@ -1,6 +1,14 @@
-import { PrismaClient } from '@prisma/client'
+import { DiaryEntry, PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 import dateTime from 'date-and-time'
+
+export interface DayModel {
+  id: string
+  date: string
+  latitude: number
+  longitude: number
+  diaryEntries: DiaryEntry[]
+}
 
 export async function readDayFromDate(date: string | Date) {
   const day = await prisma.day.findFirst({
@@ -10,12 +18,21 @@ export async function readDayFromDate(date: string | Date) {
     include: { diaryEntries: true },
   })
 
-  return day
+  if (day)
+    return {
+      id: day?.id,
+      date: yearMonthDay(day.date),
+      latitude: day?.latitude,
+      longitude: day?.longitude,
+      diaryEntries: day?.diaryEntries,
+    } as DayModel
+
+  return null
 }
 
-export async function readAllDayCoordinatesBefore(date: string | Date) {
+export async function readTraveledPath(date: string | Date) {
   const days = await prisma.day.findMany({
-    select: { date: true, latitude: true, longitude: true },
+    select: { latitude: true, longitude: true },
     where: {
       date: {
         lte: new Date(date),
@@ -23,8 +40,11 @@ export async function readAllDayCoordinatesBefore(date: string | Date) {
     },
     orderBy: { date: 'asc' },
   })
+  const path = days
+    .filter((day) => day.longitude && day.latitude)
+    .map((day) => [day.longitude, day.latitude])
 
-  return days
+  return path as [number, number][]
 }
 
 export async function readAllDayDates() {
@@ -34,19 +54,20 @@ export async function readAllDayDates() {
   return dates
 }
 
-export async function readSorroundingDates(date: Date) {
+export async function readSorroundingDateStrings(date: Date | string) {
   const current = new Date(date)
-  const previous = await readDayFromDate(
-    yearMonthDay(new Date(current.getTime() - 86400000))
-  ) // 86400000 = one day in ms
+  const previous = await readDayFromDate(new Date(current.getTime() - 86400000)) // 86400000 = one day in ms
   const following = await readDayFromDate(
-    yearMonthDay(new Date(current.getTime() + 86400000))
+    new Date(current.getTime() + 86400000)
   )
 
-  return [previous, following]
+  return [previous?.date || null, following?.date || null] as [
+    string | null,
+    string | null
+  ]
 }
 
 // helpers
 export function yearMonthDay(date: Date): string {
-  return dateTime.format(date, 'YYYY-MM-DD')
+  return dateTime.format(new Date(date), 'YYYY-MM-DD')
 }
