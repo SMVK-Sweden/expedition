@@ -118,7 +118,7 @@ export async function getStaticProps({ params }: any) {
 
   return {
     props: {
-      date: day ? yearMonthDay(day.date) : null,
+      date: day ? yearMonthDay(day?.date) : null,
       latitude: day ? day.latitude : null,
       longitude: day ? day.longitude : null,
       diaryEntries: day ? day.diaryEntries : null,
