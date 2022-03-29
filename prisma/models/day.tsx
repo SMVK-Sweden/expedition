@@ -10,7 +10,7 @@ export interface DayModel {
   diaryEntries: DiaryEntry[]
 }
 
-export async function readDayFromDate(date: string | Date) {
+export async function readDayFromDate(date: Date | string) {
   const day = await prisma.day.findUnique({
     where: {
       date: new Date(date),
