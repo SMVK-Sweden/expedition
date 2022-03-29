@@ -11,11 +11,11 @@ export interface DayModel {
 }
 
 export async function readDayFromDate(date: Date | string) {
+  const theDate = new Date(date)
   const day = await prisma.day.findFirst({
     where: {
-      date: { gte: new Date(date) },
+      date: theDate.toISOString(),
     },
-    orderBy: { date: 'asc' },
     include: { diaryEntries: true },
   })
 
