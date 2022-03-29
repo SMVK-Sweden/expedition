@@ -1,4 +1,4 @@
-import { DiaryEntry, PrismaClient } from '@prisma/client'
+import { DiaryEntry, PrismaClient, Prisma } from '@prisma/client'
 const prisma = new PrismaClient()
 import dateTime from 'date-and-time'
 

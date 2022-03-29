@@ -44,9 +44,9 @@ async function main() {
     daySeed.diaryEntries = { create: diaryEntries }
     daySeeds.push(daySeed)
   }
-  daySeeds.forEach(
-    async (d: Prisma.DayCreateInput) => await prisma.day.create({ data: d })
-  )
+  daySeeds.forEach(async (d: Prisma.DayCreateInput) => {
+    await prisma.day.create({ data: d })
+  })
 }
 
 main()
