@@ -12,6 +12,7 @@ import {
 } from '../../prisma/models/day'
 import { useState } from 'react'
 import RadioButton from '../../components/RadioButton'
+import Note from '../../components/Note'
 import { DiaryEntry } from '@prisma/client'
 
 interface DayProps {
@@ -30,10 +31,12 @@ export default function Day({
   const [oldMap, setOldMap] = useState(true)
 
   const diaryEntryTags = day.diaryEntries?.map((entry: DiaryEntry) => (
-    <div className="border-2 rounded-lg" key={entry.id}>
-      <p className="font-bold">{entry.author}</p>
-      <p>{entry.content}</p>
-    </div>
+    <Note
+      key={entry.id}
+      id={entry.id}
+      author={entry.author}
+      content={entry.content}
+    />
   ))
 
   return (
