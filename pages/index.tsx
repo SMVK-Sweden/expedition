@@ -6,6 +6,8 @@ import CalendarData from '../pages/api/calendar_data.json'
 import { todaysTravelDateIndex } from '../shared/utils'
 import Button from '../components/Button'
 import SideBar from '../components/SideBar'
+import NavigationBar from '../components/NavigationBar'
+import 'bootstrap/dist/css/bootstrap.css'
 
 export interface InfoParagraphsProps {
   Plats?: string
@@ -96,7 +98,7 @@ export default function Home() {
         <link rel="icon" href="/ship.png" />
       </Head>
 
-      <SideBar />
+      <NavigationBar />
 
       <div className="flex flex-col overflow-hidden">
         <div
