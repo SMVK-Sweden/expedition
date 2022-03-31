@@ -41,8 +41,8 @@ class NavigationBar extends Component {
   }
 }
 
-//<a className="nav-link active" aria-current="page">
-//Hem
-//</a>
+// <a className="nav-link active" aria-current="page">
+// Hem
+// </a>
 
 export default NavigationBar
