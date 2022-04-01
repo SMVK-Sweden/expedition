@@ -69,6 +69,13 @@ export async function readSorroundingDateStrings(date: Date | string) {
   ]
 }
 
+export async function readStartAndFinnishDates() {
+  const start = await prisma.day.findFirst({ orderBy: { date: 'asc' } })
+  const finnish = await prisma.day.findFirst({ orderBy: { date: 'desc' } })
+
+  return [yearMonthDay(start!.date), yearMonthDay(finnish!.date)]
+}
+
 // helpers
 export function yearMonthDay(date: Date): string {
   return dateTime.format(new Date(date), 'YYYY-MM-DD')

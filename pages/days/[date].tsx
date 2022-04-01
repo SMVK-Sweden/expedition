@@ -9,17 +9,21 @@ import {
   readSorroundingDateStrings,
   yearMonthDay,
   DayModel,
+  readStartAndFinnishDates,
 } from '../../prisma/models/day'
 import { useState } from 'react'
 import RadioButton from '../../components/RadioButton'
 import Note from '../../components/Note'
 import { DiaryEntry } from '@prisma/client'
+import Timeline from '../../components/Timeline'
 
 interface DayProps {
   day: DayModel
   path: [number, number][]
   yesterdayDate?: string
   tomorrowDate?: string
+  startDate: string
+  finnishDate: string
 }
 
 export default function Day({
@@ -27,6 +31,8 @@ export default function Day({
   path,
   yesterdayDate,
   tomorrowDate,
+  startDate,
+  finnishDate,
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
 
@@ -41,7 +47,7 @@ export default function Day({
 
   return (
     <div className="w-full max-w-6xl m-auto mt-6">
-      <p>
+      <p className="text-lg font-bold text-center">
         {new Date(day.date).toLocaleDateString('sv-SE', {
           weekday: 'long',
           year: 'numeric',
@@ -86,6 +92,11 @@ export default function Day({
           </Button>
         </Link>
       </div>
+      <Timeline
+        date={day.date}
+        startDate={startDate}
+        finnishDate={finnishDate}
+      />
       {diaryEntryTags}
       <div className="mb-6"></div>
     </div>
@@ -113,6 +124,7 @@ export async function getStaticProps({ params }: staticPropsParams) {
 
   const path = await readTraveledPath(params.date)
   const [yesterday, tomorrow] = await readSorroundingDateStrings(params.date)
+  const [startDate, finnishDate] = await readStartAndFinnishDates()
 
   if (day) {
     return {
@@ -121,6 +133,8 @@ export async function getStaticProps({ params }: staticPropsParams) {
         path: path,
         yesterdayDate: yesterday,
         tomorrowDate: tomorrow,
+        startDate: startDate,
+        finnishDate: finnishDate,
       },
     }
   }

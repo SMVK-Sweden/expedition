@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import modernCountries from './data/subunits_small.json'
 import oldCountries from './data/world_1880.json'
 import { throttle } from 'throttle-debounce'
@@ -8,24 +8,35 @@ export default function CanvasMap({ boatCoordinates, path, oldMap }) {
   // chose which map to show
   const countries = oldMap ? oldCountries : modernCountries
   // get d3 working
-  const ref = useRef(null)
   const [dimensions, setDimenstions] = useState([0, 0])
   const [width, height] = dimensions
-  // change position props to [lon, lat] format
-  const boatLonLat = [boatCoordinates[1], boatCoordinates[0]]
-  const pathLonLat = path.map((coords) => [coords[1], coords[0]])
 
-  // apply dimensions if not set
-  if (ref.current && !width) {
-    const w = ref.current.parentElement.clientWidth
-    const h = ref.current.parentElement.clientHeight
+  // set the size of the canvas to fill the outer div when the ref mounts
+  const [canvasRef, setCanvasRef] = useState(null)
+  const ref = useCallback((node) => {
+    if (node !== null) {
+      setCanvasRef(node)
+      const w = node.parentElement.clientWidth
+      const h = node.parentElement.clientHeight
+      setDimenstions([w, h])
+      console.log('mounted')
+    }
+  }, [])
+
+  if (canvasRef && width == 0) {
+    const w = canvasRef.parentElement.clientWidth
+    const h = canvasRef.parentElement.clientHeight
     setDimenstions([w, h])
   }
 
-  useEffect(() => {
-    if (ref.current) {
+  const refreshCanvas = () => {
+    if (canvasRef) {
+      // change position props to [lon, lat] format
+      const boatLonLat = [boatCoordinates[1], boatCoordinates[0]]
+      const pathLonLat = path.map((coords) => [coords[1], coords[0]])
+
       let canvas = d3
-        .select(ref.current)
+        .select(canvasRef)
         .attr('width', width)
         .attr('height', height)
 
@@ -138,55 +149,20 @@ export default function CanvasMap({ boatCoordinates, path, oldMap }) {
       // initialize the canvas
       draw()
     }
-  }, [boatLonLat, pathLonLat, dimensions])
+  }
+
+  useEffect(refreshCanvas, [
+    boatCoordinates,
+    canvasRef,
+    countries.features,
+    height,
+    path,
+    width,
+  ])
 
   return (
     <div className="w-full h-full">
       <canvas ref={ref}></canvas>
-    </div>
-  )
-}
-
-export function OldCanvasMap({ boatCoordinates, path }) {
-  return (
-    <div>
-      <div className="relative">
-        <div
-          style={{
-            filter: 'url(#wavy)',
-            // boxShadow: 'inset 0px 0px 40px black',
-            // position: 'relative',
-            // display: 'block',
-            // zIndex: '2',
-          }}
-        >
-          <CanvasMap boatCoordinates={boatCoordinates} path={path} />
-        </div>
-        {/* <div
-          style={{
-            boxShadow: '10px 10px 40px black',
-            position: 'absolute',
-            top: '5%',
-            left: '5%',
-            height: '90%',
-            width: '90%',
-          }}
-        ></div> */}
-      </div>
-      <div style={{ display: 'none' }}>
-        <svg>
-          <filter id="wavy">
-            <feTurbulence
-              x="0"
-              y="0"
-              baseFrequency="0.02"
-              numOctaves="3"
-              seed="1"
-            ></feTurbulence>
-            <feDisplacementMap in="SourceGraphic" scale="10" />
-          </filter>
-        </svg>
-      </div>
     </div>
   )
 }

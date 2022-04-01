@@ -13,7 +13,7 @@ export default function Note({ id, author, content }: NoteProps) {
   return (
     <div>
       <div className="mt-6 relative z-10 w-full h-full flex">
-        <div className="absolute inset-1 z-1 shadow-2xl bg-transparent"></div>
+        <div className="absolute inset-1 z-1 shadow-xl bg-transparent"></div>
         <div
           style={{ filter: `url(#oldPaper${id})` }}
           className="bg-[#F3E9DB] absolute inset-0 z-2"
