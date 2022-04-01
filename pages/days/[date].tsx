@@ -87,6 +87,7 @@ export default function Day({
         </Link>
       </div>
       {diaryEntryTags}
+      <div className="mb-6"></div>
     </div>
   )
 }
