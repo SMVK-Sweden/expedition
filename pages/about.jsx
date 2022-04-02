@@ -29,7 +29,7 @@ export default function About() {
         låta lite. Hur många bilder skulle du själv hinna ta om du var ute i 500
         dagar på ett krigsfartyg till Eldslandet, Peru, Söderhavet, Japan, Hong
         Kong, Filippinerna, Thailand, Indien, Eritrea, Suezkanalen och slutligen
-        Medelhavet innan Sverige åter siktades?"
+        Medelhavet innan Sverige åter siktades?
       </p>
     </div>
   )
