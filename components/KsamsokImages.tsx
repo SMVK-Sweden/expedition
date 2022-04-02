@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { imageWithDescriptionMany } from '../shared/ksamsok'
+import { imageWithDescriptionMany } from '../lib/ksamsok'
 
 interface KsamsokImageProps {
   source: string

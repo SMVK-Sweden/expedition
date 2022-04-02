@@ -22,7 +22,7 @@ export default function Note({ id, author, content }: NoteProps) {
           <div className="w-11/12 h-11/12 my-1">
             <p className="font-serif fonst-small text-sm">{content}</p>
             <div className="h-6">
-              <p className="absolute bottom-0 right-0 font-semibold">
+              <p className="absolute bottom-0 right-0 text-xs font-semibold">
                 {author}
               </p>
             </div>
