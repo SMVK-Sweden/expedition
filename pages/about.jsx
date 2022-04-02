@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <div className="content-center">
+    <div className="w-full max-w-6xl m-auto">
       <h3 className="text-center">
         Vanadis världsomsegling - Jorden runt på 500 dagar
       </h3>
