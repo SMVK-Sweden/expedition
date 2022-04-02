@@ -15,7 +15,7 @@ import { useState } from 'react'
 import RadioButton from '../../components/RadioButton'
 import Note from '../../components/Note'
 import { DiaryEntry } from '@prisma/client'
-import Timeline from '../../components/Timeline'
+import DatePicker from '../../components/DatePicker'
 
 interface DayProps {
   day: DayModel
@@ -92,7 +92,7 @@ export default function Day({
           </Button>
         </Link>
       </div>
-      <Timeline
+      <DatePicker
         date={day.date}
         startDate={startDate}
         finnishDate={finnishDate}

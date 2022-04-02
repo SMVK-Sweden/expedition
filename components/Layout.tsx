@@ -1,4 +1,5 @@
 import NavigationBar from './NavigationBar'
+import Footer from './Footer'
 
 interface LayoutProps {
   children: JSX.Element
@@ -6,10 +7,10 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div>
+    <div className="flex flex-col">
       <NavigationBar />
       {children}
-      <p>footer</p>
+      <Footer />
     </div>
   )
 }
