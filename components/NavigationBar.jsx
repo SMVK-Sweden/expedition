@@ -5,7 +5,7 @@ class NavigationBar extends Component {
   state = {}
   render() {
     return (
-      <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar static-top navbar-expand-lg navbar-dark bg-dark">
         <button
           className="navbar-toggler"
           type="button"
@@ -24,7 +24,7 @@ class NavigationBar extends Component {
           <div className="collapse navbar-collapse" id="navbarNav">
             <div className="navbar-nav">
               <Link href="/">
-                <a className="nav-link">Hem</a>
+                <a className="nav-link">Idag</a>
               </Link>
               <Link href="/about">
                 <a className="nav-link">Om Vanadis</a>
