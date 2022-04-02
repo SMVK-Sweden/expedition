@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 
-interface TimelineProps {
+interface DatePickerProps {
   date: string
   startDate: string
   finnishDate: string
 }
 
-export default function Timeline({
+export default function DatePicker({
   date,
   startDate,
   finnishDate,
-}: TimelineProps) {
+}: DatePickerProps) {
   const [currentDate, setCurrentDate] = useState(date)
   const router = useRouter()
 
