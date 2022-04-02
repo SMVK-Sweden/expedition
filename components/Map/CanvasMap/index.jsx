@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
-import { useEffect, useState, useCallback, useRef } from 'react'
-import modernCountries from './data/subunits_small.json'
+import { useEffect, useState, useCallback } from 'react'
+import modernCountries from './data/subunits_medium.json'
 import oldCountries from './data/world_1880.json'
 import { throttle } from 'throttle-debounce'
 
