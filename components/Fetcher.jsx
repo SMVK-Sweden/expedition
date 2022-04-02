@@ -12,12 +12,12 @@ export default function Fetcher() {
     if (!data) return <div>Loading...</div>
 
     return (
-      <div className="text-[22px]">
+      <div className="">
         <div className="text-center">
           <h1>{data.rubrik}</h1>
         </div>
 
-        <div className="text-left">
+        <div className="text-left text-xs">
           <h1>{data.inledning}</h1>
         </div>
 
