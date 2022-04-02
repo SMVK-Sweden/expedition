@@ -7,7 +7,7 @@ async function main() {
   const daySeeds: Prisma.DayCreateInput[] = []
   for (const day of CalendarData) {
     const daySeed: Prisma.DayCreateInput = {
-      day: new Date(), // this will be replaced because all data has 'Datum'
+      date: new Date(), // this will be replaced because all data has 'Datum'
     }
 
     interface diaryEntry {
@@ -20,7 +20,7 @@ async function main() {
       // scalar fields on Day
       switch (field) {
         case 'Datum':
-          daySeed.day = new Date(value)
+          daySeed.date = new Date(value)
           break
         case 'Koordinater':
           daySeed.latitude = value[0]
@@ -44,9 +44,9 @@ async function main() {
     daySeed.diaryEntries = { create: diaryEntries }
     daySeeds.push(daySeed)
   }
-  daySeeds.forEach(
-    async (d: Prisma.DayCreateInput) => await prisma.day.create({ data: d })
-  )
+  daySeeds.forEach(async (d: Prisma.DayCreateInput) => {
+    await prisma.day.create({ data: d })
+  })
 }
 
 main()
