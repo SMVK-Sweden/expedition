@@ -14,7 +14,6 @@ const fetcher = (...args) => fetch(...args).then((res) => res.json())
 export default function About() {
   return (
     <div>
-      <NavigationBar />
       <ul>
         <li>
           <Fetcher> </Fetcher>

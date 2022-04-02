@@ -5,7 +5,7 @@ class NavigationBar extends Component {
   state = {}
   render() {
     return (
-      <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar static-top navbar-expand-lg navbar-dark bg-dark">
         <button
           className="navbar-toggler"
           type="button"
