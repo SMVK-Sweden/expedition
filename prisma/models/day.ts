@@ -10,7 +10,7 @@ export interface DayModel {
   diaryEntries: DiaryEntry[]
 }
 
-// test
+// day
 export async function readDayFromDate(date: Date | string) {
   const theDate = new Date(date)
   const day = await prisma.day.findFirst({
@@ -74,6 +74,21 @@ export async function readStartAndFinnishDates() {
   const finnish = await prisma.day.findFirst({ orderBy: { date: 'desc' } })
 
   return [yearMonthDay(start!.date), yearMonthDay(finnish!.date)]
+}
+
+// diaryEntries
+export async function dayAddDiaryEntry(
+  dayId: string,
+  author: string,
+  content: string
+) {
+  prisma.diaryEntry.create({
+    data: {
+      dayId: dayId,
+      author: author,
+      content: content,
+    },
+  })
 }
 
 // helpers
