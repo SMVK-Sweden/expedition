@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import { useEffect, useState, useCallback } from 'react'
-import modernCountries from './data/subunits_medium.json'
+import modernCountries from './data/subunits_small.json'
 import oldCountries from './data/world_1880.json'
 import { throttle } from 'throttle-debounce'
 
@@ -19,7 +19,6 @@ export default function CanvasMap({ boatCoordinates, path, oldMap }) {
       const w = node.parentElement.clientWidth
       const h = node.parentElement.clientHeight
       setDimenstions([w, h])
-      console.log('mounted')
     }
   }, [])
 
@@ -61,7 +60,7 @@ export default function CanvasMap({ boatCoordinates, path, oldMap }) {
       // zoom events can fire to often
       // so the number of redraws of the
       // canvas needs to be limited
-      const zoomHandler = throttle(50, false, (e) => {
+      const zoomHandler = throttle(60, false, (e) => {
         // clear the whole canvas
         context.fillStyle = '#ffffff'
         context.beginPath()
