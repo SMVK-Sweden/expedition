@@ -1,38 +1,25 @@
-import dateTime from 'date-and-time'
 import CanvasMap from '../../components/Map/CanvasMap'
 import Button from '../../components/Button'
 import Link from 'next/link'
-import {
-  readTraveledPath,
-  readDayFromDate,
-  readAllDayDates,
-  readSorroundingDateStrings,
-  yearMonthDay,
-  DayModel,
-  readStartAndFinnishDates,
-} from '../../prisma/models/day'
+import { yearMonthDay } from '../../lib/dateConversion'
 import { useState } from 'react'
 import RadioButton from '../../components/RadioButton'
 import Note from '../../components/Note'
-import { DiaryEntry } from '@prisma/client'
 import DatePicker from '../../components/DatePicker'
+import { PrismaClient, Day, DiaryEntry } from '@prisma/client'
+const prisma = new PrismaClient()
+import { LatLng, LatLngList } from '../../lib/types/LatLng'
 
 interface DayProps {
-  day: DayModel
-  path: [number, number][]
-  yesterdayDate?: string
-  tomorrowDate?: string
-  startDate: string
-  finnishDate: string
+  day: Day & { diaryEntries: DiaryEntry[] }
+  previousDays: Day[]
+  followingDays: Day[]
 }
 
-export default function Day({
+export default function DayPage({
   day,
-  path,
-  yesterdayDate,
-  tomorrowDate,
-  startDate,
-  finnishDate,
+  previousDays,
+  followingDays,
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
 
@@ -45,10 +32,25 @@ export default function Day({
     />
   ))
 
+  const boatPos: LatLng = [day.latitude!, day.longitude!]
+  const pathTraveled: LatLngList = previousDays
+    ?.filter((day: Day) => day.latitude)
+    .map((day: Day) => [day.latitude!, day.longitude!])
+  pathTraveled.push(boatPos)
+
+  const yesterdayDate =
+    previousDays.length > 0 ? previousDays[previousDays.length - 1].date : null
+  const tomorrowDate = followingDays.length > 0 ? followingDays[0].date : null
+  const startDate = previousDays.length > 0 ? previousDays[0].date : day.date
+  const finnishDate =
+    followingDays.length > 0
+      ? followingDays[followingDays.length - 1].date
+      : day.date
+
   return (
     <div className="w-full max-w-6xl m-auto mt-6">
       <p className="text-lg font-bold text-center">
-        {new Date(day.date).toLocaleDateString('sv-SE', {
+        {day.date.toLocaleDateString('sv-SE', {
           weekday: 'long',
           year: 'numeric',
           month: 'long',
@@ -57,8 +59,8 @@ export default function Day({
       </p>
       <div style={{ height: '50vh' }}>
         <CanvasMap
-          boatCoordinates={[day.latitude, day.longitude]}
-          path={path}
+          boatCoordinates={boatPos}
+          path={pathTraveled}
           oldMap={oldMap}
         />
       </div>
@@ -66,14 +68,15 @@ export default function Day({
         options={['1880', '2022']}
         value="1880"
         onChange={(e) => {
-          console.log(e.target.value)
           const value = e.target.value
           if (value == '1880') setOldMap(true)
           else setOldMap(false)
         }}
       />
       <div className="flex gap-x-2">
-        <Link href={yesterdayDate ? `/days/${yesterdayDate}` : ''}>
+        <Link
+          href={yesterdayDate ? `/days/${yearMonthDay(yesterdayDate)}` : ''}
+        >
           <Button
             className={`flex-auto ${
               yesterdayDate ? '' : 'bg-slate-200 bg hover:bg-slate-200 '
@@ -82,7 +85,7 @@ export default function Day({
             igår
           </Button>
         </Link>
-        <Link href={tomorrowDate ? `/days/${tomorrowDate}` : ''}>
+        <Link href={tomorrowDate ? `/days/${yearMonthDay(tomorrowDate)}` : ''}>
           <Button
             className={`flex-auto ${
               tomorrowDate ? '' : 'bg-slate-200 bg hover:bg-slate-200 '
@@ -93,9 +96,9 @@ export default function Day({
         </Link>
       </div>
       <DatePicker
-        date={day.date}
-        startDate={startDate}
-        finnishDate={finnishDate}
+        date={yearMonthDay(day.date)}
+        startDate={yearMonthDay(startDate)}
+        finnishDate={yearMonthDay(finnishDate)}
       />
       {diaryEntryTags}
       <div className="mb-6"></div>
@@ -104,8 +107,14 @@ export default function Day({
 }
 
 export async function getStaticPaths() {
-  const dates = await readAllDayDates()
-  const paths = dates.map((date) => ({ params: { date: date } }))
+  const dates = await prisma.day.findMany({
+    select: {
+      date: true,
+    },
+  })
+  const paths = dates.map((res) => ({
+    params: { date: yearMonthDay(res.date) },
+  }))
 
   return {
     paths,
@@ -120,22 +129,25 @@ interface staticPropsParams {
 }
 
 export async function getStaticProps({ params }: staticPropsParams) {
-  const day = await readDayFromDate(params.date)
+  const day = await prisma.day.findUnique({
+    where: { date: new Date(params.date) },
+    include: { diaryEntries: true },
+  })
 
-  const path = await readTraveledPath(params.date)
-  const [yesterday, tomorrow] = await readSorroundingDateStrings(params.date)
-  const [startDate, finnishDate] = await readStartAndFinnishDates()
+  const previousDays = await prisma.day.findMany({
+    where: { date: { lt: day!.date } },
+    orderBy: { date: 'asc' },
+  })
+  const followingDays = await prisma.day.findMany({
+    where: { date: { gt: day!.date } },
+    orderBy: { date: 'asc' },
+  })
 
-  if (day) {
-    return {
-      props: {
-        day: day,
-        path: path,
-        yesterdayDate: yesterday,
-        tomorrowDate: tomorrow,
-        startDate: startDate,
-        finnishDate: finnishDate,
-      },
-    }
+  return {
+    props: {
+      day,
+      previousDays,
+      followingDays,
+    },
   }
 }
