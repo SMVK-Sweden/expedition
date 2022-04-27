@@ -8,10 +8,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const all = await prisma.day.findMany({
-    select: { date: true },
-    orderBy: { date: 'asc' },
+  const { date } = req.query
+  const day = await prisma.day.findUnique({
+    where: {
+      date: typeof date === 'string' ? new Date(date) : new Date(date[0]),
+    },
+    include: { diaryEntries: true },
   })
 
-  res.status(200).json(all.map((row) => yearMonthDay(row.date)))
+  res.status(200).json(day)
 }

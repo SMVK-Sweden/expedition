@@ -9,9 +9,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const all = await prisma.day.findMany({
-    select: { date: true },
+    //select: { date: true },
+    include: { diaryEntries: true },
     orderBy: { date: 'asc' },
   })
 
-  res.status(200).json(all.map((row) => yearMonthDay(row.date)))
+  res.status(200).json(all)
 }

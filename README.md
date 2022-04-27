@@ -48,3 +48,14 @@ Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&ut
 ### Anropa databasen i koden
 
 **Anropa endast databasen i api-routes!**. Man gör det som sagt genom att använda `PrismaClient`. [Se här](https://www.prisma.io/docs/concepts/components/prisma-client/crud)
+
+### Vårt api
+
+Det här är en start på ett api
+
+#### days
+
+| url                    | mening                             | metod |
+| ---------------------- | ---------------------------------- | ----- |
+| '/api/days'            | hämta alla dagar (all info)        | get   |
+| '/api/days/yyyy-mm-dd' | hämta dagen med datumet yyyy-mm-dd | get   |
