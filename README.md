@@ -55,7 +55,8 @@ Det här är en start på ett api
 
 #### days
 
-| url                    | mening                             | metod |
-| ---------------------- | ---------------------------------- | ----- |
-| '/api/days'            | hämta alla dagar (all info)        | get   |
-| '/api/days/yyyy-mm-dd' | hämta dagen med datumet yyyy-mm-dd | get   |
+| url                    | action                                        | metod | body | response                |
+| ---------------------- | --------------------------------------------- | ----- | ---- | ----------------------- |
+| '/api/days'            | hämta alla dagar (all info)                   | get   | -    | `DayWithDiaryEntries`   |
+| '/api/days/yyyy-mm-dd' | hämta dagen med datumet yyyy-mm-dd (all info) | get   | -    | `DayWithDiaryEntries[]` |
+| '/api/days/yyyy-mm-dd' | skapa en dag (med endast datum och id)        | post  | -    | -                       |
