@@ -51,19 +51,19 @@ Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&ut
 
 ### Vårt api
 
-Det här är en start på ett api
+Det här är en start på ett api. För enkelhets skull gör vi en ganska naiv metod där vi uppdaterar relationer till `Day` genom att ta bort dom och skapa de på nytt. De har bara en betydelse i förhållande till en specifik dag ändå i nuläget så det gör inget.
 
 #### days
 
-| url                    | action                                        | metod  | body                                               | response                |
-| ---------------------- | --------------------------------------------- | ------ | -------------------------------------------------- | ----------------------- |
-| '/api/days'            | hämta alla dagar (all info)                   | get    | -                                                  | `DayWithDiaryEntries[]` |
-| '/api/days/yyyy-mm-dd' | hämta dagen med datumet yyyy-mm-dd (all info) | get    | -                                                  | `DayWithDiaryEntries`   |
-| '/api/days/yyyy-mm-dd' | skapa en dag (med endast datum och id)        | post   | -                                                  | -                       |
-| '/api/days/yyyy-mm-dd' | updatera en dag                               | put    | `{place?, latitude?, longitude?, diaryEntries[]?}` | `DayWithDiaryEntries`   |
-| '/api/days/yyyy-mm-dd' | ta bort en dag                                | delete | -                                                  | -                       |
+| url                    | action                                        | metod  | body                                                                   | response           |
+| ---------------------- | --------------------------------------------- | ------ | ---------------------------------------------------------------------- | ------------------ |
+| '/api/days'            | hämta alla dagar (all info)                   | get    | -                                                                      | `DayWithContent[]` |
+| '/api/days/yyyy-mm-dd' | hämta dagen med datumet yyyy-mm-dd (all info) | get    | -                                                                      | `DayWithContent`   |
+| '/api/days/yyyy-mm-dd' | skapa en dag (med endast datum och id)        | post   | -                                                                      | -                  |
+| '/api/days/yyyy-mm-dd' | updatera en dag                               | put    | `{id, place?, latitude?, longitude?, diaryEntries[]?, ksamsokImages?}` | `DayWithContent`   |
+| '/api/days/yyyy-mm-dd' | ta bort en dag                                | delete | -                                                                      | -                  |
 
-#### diaryEntries
+#### diaryEntries - kommer nog inte användas trots allt
 
 | url                    | action                       | metod  | body                   | response       |
 | ---------------------- | ---------------------------- | ------ | ---------------------- | -------------- |
