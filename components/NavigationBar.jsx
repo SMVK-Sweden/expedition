@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 class NavigationBar extends Component {
   state = {}
   render() {
     return (
-      <nav className="navbar static-top navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar static-top navbar-expand-lg navbar-light bg-light">
         <button
           className="navbar-toggler"
           type="button"
@@ -19,7 +20,15 @@ class NavigationBar extends Component {
         </button>
         <div className="container-fluid">
           <Link href="/">
-            <a className="navbar-brand">Expedition Vanadis</a>
+            <a className="navbar-brand" href="#">
+              <img
+                src="/bild_logga.png"
+                width="50"
+                height="50"
+                className="d-inline-block align-top"
+                alt=""
+              />
+            </a>
           </Link>
           <div className="collapse navbar-collapse" id="navbarNav">
             <div className="navbar-nav">

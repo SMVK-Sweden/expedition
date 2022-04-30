@@ -1,14 +1,14 @@
-import CanvasMap from '../../components/Map/CanvasMap'
-import Button from '../../components/Button'
+import CanvasMap from '../../../components/Map/CanvasMap'
+import Button from '../../../components/Button'
 import Link from 'next/link'
-import { yearMonthDay } from '../../lib/dateConversion'
+import { yearMonthDay } from '../../../lib/dateConversion'
 import { useState } from 'react'
-import RadioButton from '../../components/RadioButton'
-import Note from '../../components/Note'
-import DatePicker from '../../components/DatePicker'
+import RadioButton from '../../../components/RadioButton'
+import Note from '../../../components/Note'
+import DatePicker from '../../../components/DatePicker'
 import { PrismaClient, Day, DiaryEntry } from '@prisma/client'
 const prisma = new PrismaClient()
-import { LatLng, LatLngList } from '../../lib/types/LatLng'
+import { LatLng, LatLngList } from '../../../lib/types/LatLng'
 
 interface DayProps {
   day: Day & { diaryEntries: DiaryEntry[] }

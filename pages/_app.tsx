@@ -4,6 +4,11 @@ import '../styles/menu.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import type { AppProps } from 'next/app'
 import Layout from '../components/Layout'
+import axios from 'axios'
+
+// global axios config
+axios.defaults.baseURL = process.env.API_URL || 'http://localhost:3000'
+axios.defaults.headers.common['Accept'] = 'application/json'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
