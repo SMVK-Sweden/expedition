@@ -55,7 +55,7 @@ export default async function handler(
     await prisma.day.delete({
       where: { date: new Date(datestr) },
     })
-    res.status(200)
+    res.status(200).json({ message: 'deleted day' })
   }
 
   res.status(500).json({ error: 'did not match anything' })

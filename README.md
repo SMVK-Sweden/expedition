@@ -55,8 +55,20 @@ Det här är en start på ett api
 
 #### days
 
-| url                    | action                                        | metod | body | response                |
-| ---------------------- | --------------------------------------------- | ----- | ---- | ----------------------- |
-| '/api/days'            | hämta alla dagar (all info)                   | get   | -    | `DayWithDiaryEntries`   |
-| '/api/days/yyyy-mm-dd' | hämta dagen med datumet yyyy-mm-dd (all info) | get   | -    | `DayWithDiaryEntries[]` |
-| '/api/days/yyyy-mm-dd' | skapa en dag (med endast datum och id)        | post  | -    | -                       |
+| url                    | action                                        | metod  | body                                               | response                |
+| ---------------------- | --------------------------------------------- | ------ | -------------------------------------------------- | ----------------------- |
+| '/api/days'            | hämta alla dagar (all info)                   | get    | -                                                  | `DayWithDiaryEntries[]` |
+| '/api/days/yyyy-mm-dd' | hämta dagen med datumet yyyy-mm-dd (all info) | get    | -                                                  | `DayWithDiaryEntries`   |
+| '/api/days/yyyy-mm-dd' | skapa en dag (med endast datum och id)        | post   | -                                                  | -                       |
+| '/api/days/yyyy-mm-dd' | updatera en dag                               | put    | `{place?, latitude?, longitude?, diaryEntries[]?}` | `DayWithDiaryEntries`   |
+| '/api/days/yyyy-mm-dd' | ta bort en dag                                | delete | -                                                  | -                       |
+
+#### diaryEntries
+
+| url                    | action                       | metod  | body                | response       |
+| ---------------------- | ---------------------------- | ------ | ------------------- | -------------- |
+| '/api/diaryEntries'    | hämta alla anteckningar      | get    | -                   | `DiaryEntry[]` |
+| '/api/diaryEntries/id' | hämta en specifik anteckning | get    | -                   | `DiaryEntry`   |
+| '/api/diaryEntries'    | skapa en anteckning          | post   | `{author, content}` | `DiaryEntry`   |
+| '/api/diaryEntries/id' | updatera en anteckning       | put    | `{author, content}` | `DiaryEntry`   |
+| '/api/diaryEntries/id' | ta bort en anteckning        | delete | -                   | -              |
