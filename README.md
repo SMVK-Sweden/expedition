@@ -65,10 +65,10 @@ Det här är en start på ett api
 
 #### diaryEntries
 
-| url                    | action                       | metod  | body                | response       |
-| ---------------------- | ---------------------------- | ------ | ------------------- | -------------- |
-| '/api/diaryEntries'    | hämta alla anteckningar      | get    | -                   | `DiaryEntry[]` |
-| '/api/diaryEntries/id' | hämta en specifik anteckning | get    | -                   | `DiaryEntry`   |
-| '/api/diaryEntries'    | skapa en anteckning          | post   | `{author, content}` | `DiaryEntry`   |
-| '/api/diaryEntries/id' | updatera en anteckning       | put    | `{author, content}` | `DiaryEntry`   |
-| '/api/diaryEntries/id' | ta bort en anteckning        | delete | -                   | -              |
+| url                    | action                       | metod  | body                   | response       |
+| ---------------------- | ---------------------------- | ------ | ---------------------- | -------------- |
+| '/api/diaryEntries'    | hämta alla anteckningar      | get    | -                      | `DiaryEntry[]` |
+| '/api/diaryEntries/id' | hämta en specifik anteckning | get    | -                      | `DiaryEntry`   |
+| '/api/diaryEntries'    | skapa en anteckning          | post   | `{author, content}`    | `DiaryEntry`   |
+| '/api/diaryEntries/id' | updatera en anteckning       | put    | `{author, contentgit}` | `DiaryEntry`   |
+| '/api/diaryEntries/id' | ta bort en anteckning        | delete | -                      | -              |
