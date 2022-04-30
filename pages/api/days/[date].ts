@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient, Prisma, DiaryEntry } from '@prisma/client'
 import { yearMonthDay } from '../../../lib/dateConversion'
-import { DayWithDiaryEntries } from '../../../lib/types/prismaTypes'
+import { DayWithContent } from '../../../lib/types/prismaTypes'
 const prisma = new PrismaClient()
 
 export default async function handler(
@@ -18,8 +18,9 @@ export default async function handler(
       where: {
         date: new Date(datestr),
       },
-      include: { diaryEntries: true },
+      include: { diaryEntries: true, ksamsokImages: true },
     })
+    console.log(day)
     if (day !== null) return res.status(200).json(day)
     else return res.status(400).json({ error: 'day not found' })
   }
@@ -37,17 +38,30 @@ export default async function handler(
 
   if (req.method === 'PUT') {
     // update a day
-    const updatedDay: DayWithDiaryEntries = req.body
+    const updatedDay: DayWithContent = req.body
+    // drop previous relations
+    await prisma.diaryEntry.deleteMany({ where: { dayId: updatedDay.id } })
+    await prisma.ksamsokImage.deleteMany({ where: { dayId: updatedDay.id } })
+    await prisma.day.update({
+      where: { date: new Date(datestr) },
+      data: {
+        diaryEntries: { set: [] },
+        ksamsokImages: { set: [] },
+      },
+    })
+
+    // update
     const day = await prisma.day.update({
       where: { date: new Date(datestr) },
       data: {
         place: updatedDay.place,
         latitude: updatedDay.latitude,
         longitude: updatedDay.longitude,
-        diaryEntries: { connect: updatedDay.diaryEntries },
+        diaryEntries: { create: updatedDay.diaryEntries },
+        ksamsokImages: { create: updatedDay.ksamsokImages },
       },
     })
-    res.status(200).json(day)
+    return res.status(200).json(day)
   }
 
   if (req.method === 'DELETE') {
@@ -55,8 +69,8 @@ export default async function handler(
     await prisma.day.delete({
       where: { date: new Date(datestr) },
     })
-    res.status(200).json({ message: 'deleted day' })
+    return res.status(200).json({ message: 'deleted day' })
   }
 
-  res.status(500).json({ error: 'did not match anything' })
+  return res.status(500).json({ error: 'did not match anything' })
 }
