@@ -17,13 +17,14 @@ export default function DayEdit() {
   }, [router.query.date])
 
   return (
-    <>
+    <form>
       <h1>Redigera {router.query.date}</h1>
+      <h2>Koordinater</h2>
 
       <h2>Välj bilder</h2>
       <div className="h-1/2 max-w-6xl">
         <ImageSearch onMarked={(e) => console.log(e)} />
       </div>
-    </>
+    </form>
   )
 }

@@ -62,14 +62,16 @@ export default function ImageSearch({
               onClick={() => {
                 const m = Array.from(marked)
                 if (markedInList(r, marked)) {
-                  setMarked(
-                    m.filter((e) => !compareKsamsokImageWithDescription(e, r))
+                  const newMarked = m.filter(
+                    (e) => !compareKsamsokImageWithDescription(e, r)
                   )
+                  setMarked(newMarked)
+                  onMarked(newMarked)
                 } else {
-                  setMarked([...m, r])
+                  const newMarked = [...m, r]
+                  setMarked(newMarked)
+                  onMarked(newMarked)
                 }
-
-                onMarked(marked)
               }}
             >
               <ImageWithDescription src={r.src} description={r.description} />
