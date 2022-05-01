@@ -24,7 +24,6 @@ export default function DayEditForm() {
     reset,
   } = useForm({
     defaultValues: useMemo(() => {
-      console.log(data)
       return {
         place: data?.place,
         latitude: data?.latitude,

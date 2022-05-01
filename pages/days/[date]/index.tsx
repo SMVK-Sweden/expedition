@@ -1,5 +1,5 @@
 import CanvasMap from '../../../components/Map/CanvasMap'
-import Button from '../../../components/Button'
+import Button from 'react-bootstrap/Button'
 import Link from 'next/link'
 import { yearMonthDay } from '../../../lib/dateConversion'
 import { useState } from 'react'
@@ -29,7 +29,6 @@ export default function DayPage({
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
   const router = useRouter()
-  console.log(day)
 
   const diaryEntryTags = day.diaryEntries?.map((entry: DiaryEntry) => (
     <Note
@@ -93,9 +92,10 @@ export default function DayPage({
           />
         </InputGroup>
       </div>
-      <div className="flex gap-x-2">
+      <div className="flex gap-x-2 mb-14">
         <Link
           href={yesterdayDate ? `/days/${yearMonthDay(yesterdayDate)}` : ''}
+          passHref
         >
           <Button
             className={`flex-auto ${
@@ -105,7 +105,10 @@ export default function DayPage({
             igår
           </Button>
         </Link>
-        <Link href={tomorrowDate ? `/days/${yearMonthDay(tomorrowDate)}` : ''}>
+        <Link
+          href={tomorrowDate ? `/days/${yearMonthDay(tomorrowDate)}` : ''}
+          passHref
+        >
           <Button
             className={`flex-auto ${
               tomorrowDate ? '' : 'bg-slate-200 bg hover:bg-slate-200 '
@@ -115,7 +118,7 @@ export default function DayPage({
           </Button>
         </Link>
       </div>
-      <h2 className="text-4xl font-bold text-center">
+      <h2 className="text-2xl font-semibold">
         {day.date.toLocaleDateString('sv-SE', {
           weekday: 'long',
           year: 'numeric',
@@ -123,27 +126,29 @@ export default function DayPage({
           day: 'numeric',
         })}
       </h2>
+      <h3 className="font-bold text-4xl">{day.place}</h3>
       {/* <DatePicker
         date={yearMonthDay(day.date)}
         startDate={yearMonthDay(startDate)}
         finnishDate={yearMonthDay(finnishDate)}
       /> */}
       {diaryEntryTags}
-      <h2>{day.place}</h2>
-      {diaryEntryTags}
       {ksamsokImageTags}
       <div className="mb-6"></div>
-      <Button
-        onClick={() => {
-          router.push(
-            `/days/${
-              typeof router.query.date === 'string' ? router.query.date : ''
-            }/edit`
-          )
-        }}
-      >
-        Redigera
-      </Button>
+      <Link href={`/days/${router.query.date as string}/edit`} passHref>
+        <Button>Redigera</Button>
+        {/* <Button
+        // onClick={() => {
+        //   router.push(
+        //     `/days/${
+        //       typeof router.query.date === 'string' ? router.query.date : ''
+        //     }/edit`
+        //   )
+        // }}
+        >
+          Redigera
+        </> */}
+      </Link>
     </div>
   )
 }
