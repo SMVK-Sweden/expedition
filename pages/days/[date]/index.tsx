@@ -12,6 +12,7 @@ import { LatLng, LatLngList } from '../../../lib/types/LatLng'
 import { DayWithContent } from '../../../lib/types/prismaTypes'
 import { getDay } from '../../../lib/api/days'
 import ImageWithDescription from '../../../components/ImageWithDescription'
+import { useRouter } from 'next/router'
 
 interface DayProps {
   day: DayWithContent
@@ -25,6 +26,7 @@ export default function DayPage({
   followingDays,
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
+  const router = useRouter()
 
   const diaryEntryTags = day.diaryEntries?.map((entry: DiaryEntry) => (
     <Note
@@ -114,6 +116,17 @@ export default function DayPage({
       {diaryEntryTags}
       {ksamsokImageTags}
       <div className="mb-6"></div>
+      <Button
+        onClick={() => {
+          router.push(
+            `/days/${
+              typeof router.query.date === 'string' ? router.query.date : ''
+            }/edit`
+          )
+        }}
+      >
+        Redigera
+      </Button>
     </div>
   )
 }

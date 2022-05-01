@@ -52,6 +52,8 @@ export default function DayEditForm() {
             }
             if (typeof router.query.date === 'string')
               updateDay(new Date(router.query.date), day)
+            if (typeof router.query.date === 'string')
+              router.push(`/days/${router.query.date}`)
           }}
         >
           Spara
