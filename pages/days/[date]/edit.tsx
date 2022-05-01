@@ -63,7 +63,12 @@ export default function DayEditForm() {
       <h2>Plats</h2>
       <label htmlFor="" className="mx-3">
         plats
-        <input type="text" value={'h'} className="mx-3" />
+        <input
+          type="text"
+          value={place}
+          className="mx-3"
+          onChange={(e) => setPlace(e.target.value)}
+        />
       </label>
 
       <h2>Koordinater</h2>
