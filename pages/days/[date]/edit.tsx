@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import ImageSearch from '../../../components/ImageSearch'
 import { getDay } from '../../../lib/api/days'
 import { DayWithContent } from '../../../lib/types/prismaTypes'
 
@@ -17,8 +18,10 @@ export default function DayEdit() {
 
   return (
     <>
-      <h1>edit sida för</h1>
-      <p>{router.query.date}</p>
+      <h1>Redigera {router.query.date}</h1>
+      <div className="h-1/2 max-w-6xl">
+        <ImageSearch onMarked={(e) => console.log(e)} />
+      </div>
     </>
   )
 }
