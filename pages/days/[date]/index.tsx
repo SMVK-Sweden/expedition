@@ -27,6 +27,7 @@ export default function DayPage({
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
   const router = useRouter()
+  console.log(day)
 
   const diaryEntryTags = day.diaryEntries?.map((entry: DiaryEntry) => (
     <Note
@@ -113,6 +114,7 @@ export default function DayPage({
         startDate={yearMonthDay(startDate)}
         finnishDate={yearMonthDay(finnishDate)}
       />
+      <h2>{day.place}</h2>
       {diaryEntryTags}
       {ksamsokImageTags}
       <div className="mb-6"></div>
