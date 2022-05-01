@@ -141,7 +141,12 @@ interface staticPropsParams {
 }
 
 export async function getStaticProps({ params }: staticPropsParams) {
-  const day = await getDay(new Date(params.date))
+  const day = await prisma.day.findUnique({
+    where: {
+      date: new Date(datestr),
+    },
+    include: { diaryEntries: true, ksamsokImages: true },
+  })
 
   const previousDays = await prisma.day.findMany({
     where: { date: { lt: day!.date } },

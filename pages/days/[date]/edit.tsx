@@ -11,7 +11,6 @@ export default function DayEdit() {
     const fetchDays = async () => {
       if (typeof router.query.date === 'string') {
         const day: DayWithContent = await getDay(new Date(router.query.date))
-        console.log(day)
       }
     }
     fetchDays()
@@ -20,6 +19,8 @@ export default function DayEdit() {
   return (
     <>
       <h1>Redigera {router.query.date}</h1>
+
+      <h2>Välj bilder</h2>
       <div className="h-1/2 max-w-6xl">
         <ImageSearch onMarked={(e) => console.log(e)} />
       </div>
