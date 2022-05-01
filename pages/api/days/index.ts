@@ -10,7 +10,7 @@ export default async function handler(
 ) {
   const all = await prisma.day.findMany({
     //select: { date: true },
-    include: { diaryEntries: true },
+    include: { diaryEntries: true, ksamsokImages: true },
     orderBy: { date: 'asc' },
   })
 

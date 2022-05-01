@@ -136,13 +136,11 @@ export default function CanvasMap({ boatCoordinates, path, oldMap }) {
         context.stroke()
 
         // mark the boat position
+        const image = new Image(100, 100)
+        image.src = '/batsketchutan_smet.png'
+        const [boatX, boatY] = projection(boatLonLat)
         context.beginPath()
-        geoGenerator({
-          type: 'Feature',
-          geometry: { type: 'Point', coordinates: boatLonLat },
-        })
-        context.fillStyle = 'red'
-        context.fill()
+        context.drawImage(image, boatX - 50, boatY - 50, 100, 100)
       }
 
       // initialize the canvas

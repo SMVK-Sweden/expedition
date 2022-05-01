@@ -11,12 +11,13 @@ datasource db {
 }
 
 model Day {
-  id           String       @id @default(uuid())
-  date         DateTime     @unique
-  place        String?
-  latitude     Float?
-  longitude    Float?
-  diaryEntries DiaryEntry[]
+  id            String         @id @default(uuid())
+  date          DateTime       @unique
+  place         String?
+  latitude      Float?
+  longitude     Float?
+  diaryEntries  DiaryEntry[]
+  ksamsokImages KsamsokImage[]
 }
 
 model DiaryEntry {
@@ -25,4 +26,12 @@ model DiaryEntry {
   day     Day?    @relation(fields: [dayId], references: [id])
   author  String
   content String
+}
+
+model KsamsokImage {
+  id          String  @id @default(uuid())
+  url         String
+  description String?
+  dayId       String?
+  day         Day?    @relation(fields: [dayId], references: [id])
 }

@@ -16,7 +16,6 @@ export default function Layout({ children }: LayoutProps) {
       <div className="flex flex-col h-screen justify-between">
         <NavigationBar />
         {children}
-        <Footer />
       </div>
     </>
   )

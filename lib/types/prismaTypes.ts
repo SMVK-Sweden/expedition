@@ -1,2 +1,5 @@
-import { Day, DiaryEntry } from '@prisma/client'
-export type DayWithDiaryEntries = Day & { diaryEntries: DiaryEntry[] }
+import { Day, DiaryEntry, KsamsokImage } from '@prisma/client'
+export type DayWithContent = Day & {
+  diaryEntries: DiaryEntry[]
+  ksamsokImages: KsamsokImage[]
+}

@@ -1,8 +1,18 @@
 const apiUrl = 'https://kulturarvsdata.se/ksamsok/api?method=search'
 
+/*
+egentligen borde man använda ksamsöks metoder för att söka på saker som är relaterade till resans id
+den har denna url
+
+const relationsUrl =
+  'https://kulturarvsdata.se/ksamsok/api?method=getRelations&relation=all&objectId=LSH/events/3554'
+
+Just nu söker vi bara på texten 'vanadis'
+*/
+
 export async function ksamsokSearch(query: string, metadata: string) {
   const searchUrl = `${apiUrl}&${metadata}&query=text=${encodeURIComponent(
-    query
+    `vanadis ${query} AND thumbnailExists="j"`
   )}`
 
   const response = await fetch(searchUrl, {
@@ -15,7 +25,7 @@ export async function ksamsokSearch(query: string, metadata: string) {
   return json.result
 }
 
-export async function imageWithDescriptionMany(query: string) {
+export async function getImagesWithDescription(query: string) {
   const res = await ksamsokSearch(query, '')
   const graphs = res.records.map((record: any) => record.record['@graph'])
 
@@ -40,7 +50,7 @@ export async function imageWithDescriptionMany(query: string) {
       ? possibleDescription.desc['@value']
       : 'beskrivning saknas'
 
-    return { source: source, description: description }
+    return { src: source, description: description }
   })
 
   return processedRecords
