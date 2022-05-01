@@ -38,10 +38,6 @@ class NavigationBar extends Component {
               <Link href="/about">
                 <a className="nav-link">Om Vanadis</a>
               </Link>
-              <Link href="/images">
-                <a className="nav-link">Bilder</a>
-              </Link>
-              <a className="nav-link disabled">Kontakt</a>
             </div>
           </div>
         </div>

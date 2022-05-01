@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import { Button, Form, FormControl, InputGroup } from 'react-bootstrap'
 import useSWR from 'swr'
-import { getDay, getDayURL, updateDay } from '../../../lib/api/days'
-import { DayWithDiaryEntries } from '../../../lib/types/prismaTypes'
+import { getDay, updateDay } from '../../../lib/api/days'
+import { DayWithContent } from '../../../lib/types/prismaTypes'
 import { useForm } from 'react-hook-form'
 
-export default function DayEdit() {
+export default function DayEditForm() {
   const router = useRouter()
 
-  const { data, error } = useSWR<DayWithDiaryEntries>(
+  const { data, error } = useSWR<DayWithContent>(
     new Date(router.query.date as string),
     getDay
   )

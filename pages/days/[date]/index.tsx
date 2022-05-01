@@ -6,14 +6,18 @@ import { useState } from 'react'
 import RadioButton from '../../../components/RadioButton'
 import Note from '../../../components/Note'
 import DatePicker from '../../../components/DatePicker'
-import { PrismaClient, Day, DiaryEntry } from '@prisma/client'
+import { PrismaClient, Day, DiaryEntry, KsamsokImage } from '@prisma/client'
 const prisma = new PrismaClient()
 import { LatLng, LatLngList } from '../../../lib/types/LatLng'
 import FormCheck from 'react-bootstrap/FormCheck'
 import { FormLabel, InputGroup } from 'react-bootstrap'
+import { DayWithContent } from '../../../lib/types/prismaTypes'
+import { getDay } from '../../../lib/api/days'
+import ImageWithDescription from '../../../components/ImageWithDescription'
+import { useRouter } from 'next/router'
 
 interface DayProps {
-  day: Day & { diaryEntries: DiaryEntry[] }
+  day: DayWithContent
   previousDays: Day[]
   followingDays: Day[]
 }
@@ -24,6 +28,8 @@ export default function DayPage({
   followingDays,
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
+  const router = useRouter()
+  console.log(day)
 
   const diaryEntryTags = day.diaryEntries?.map((entry: DiaryEntry) => (
     <Note
@@ -31,6 +37,14 @@ export default function DayPage({
       id={entry.id}
       author={entry.author}
       content={entry.content}
+    />
+  ))
+
+  const ksamsokImageTags = day.ksamsokImages?.map((image: KsamsokImage) => (
+    <ImageWithDescription
+      src={image.url}
+      description={image.description || undefined}
+      key={image.url}
     />
   ))
 
@@ -115,6 +129,21 @@ export default function DayPage({
         finnishDate={yearMonthDay(finnishDate)}
       /> */}
       {diaryEntryTags}
+      <h2>{day.place}</h2>
+      {diaryEntryTags}
+      {ksamsokImageTags}
+      <div className="mb-6"></div>
+      <Button
+        onClick={() => {
+          router.push(
+            `/days/${
+              typeof router.query.date === 'string' ? router.query.date : ''
+            }/edit`
+          )
+        }}
+      >
+        Redigera
+      </Button>
     </div>
   )
 }
@@ -143,8 +172,10 @@ interface staticPropsParams {
 
 export async function getStaticProps({ params }: staticPropsParams) {
   const day = await prisma.day.findUnique({
-    where: { date: new Date(params.date) },
-    include: { diaryEntries: true },
+    where: {
+      date: new Date(params.date),
+    },
+    include: { diaryEntries: true, ksamsokImages: true },
   })
 
   const previousDays = await prisma.day.findMany({
