@@ -28,7 +28,6 @@ export default function ImageSearch({
 
     f()
   }, [])
-  console.log('imagesearch', markedImages, marked)
 
   return (
     <div className="rounded-md bg-gray-100 overflow-scroll h-full">

@@ -188,8 +188,8 @@ function DiaryEntryForm({
       <br />
       <label htmlFor="">
         <textarea
-          cols="80"
-          rows="10"
+          cols={80}
+          rows={10}
           onChange={(e) => {
             setContentInput(e.target.value)
           }}
