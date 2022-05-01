@@ -20,7 +20,7 @@ export default async function handler(
       },
       include: { diaryEntries: true, ksamsokImages: true },
     })
-    console.log(day)
+
     if (day !== null) return res.status(200).json(day)
     else return res.status(400).json({ error: 'day not found' })
   }
