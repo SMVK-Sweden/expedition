@@ -13,9 +13,9 @@ export default function Layout({ children }: LayoutProps) {
         <title>Expedition Vanadis</title>
         <link rel="icon" href="/bild_logga.png" />
       </Head>
-      <div className="flex flex-col h-screen justify-between">
+      <div className="flex flex-col h-screen">
         <NavigationBar />
-        {children}
+        <div className="flex-1 bg-brown-200">{children}</div>
         <Footer />
       </div>
     </>

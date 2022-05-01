@@ -9,6 +9,8 @@ import DatePicker from '../../../components/DatePicker'
 import { PrismaClient, Day, DiaryEntry } from '@prisma/client'
 const prisma = new PrismaClient()
 import { LatLng, LatLngList } from '../../../lib/types/LatLng'
+import FormCheck from 'react-bootstrap/FormCheck'
+import { FormLabel, InputGroup } from 'react-bootstrap'
 
 interface DayProps {
   day: Day & { diaryEntries: DiaryEntry[] }
@@ -48,15 +50,7 @@ export default function DayPage({
       : day.date
 
   return (
-    <div className="w-full max-w-6xl m-auto mt-6">
-      <p className="text-lg font-bold text-center">
-        {day.date.toLocaleDateString('sv-SE', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </p>
+    <div className="w-full max-w-6xl m-auto mt-6 pb-10">
       <div style={{ height: '50vh' }}>
         <CanvasMap
           boatCoordinates={boatPos}
@@ -64,15 +58,27 @@ export default function DayPage({
           oldMap={oldMap}
         />
       </div>
-      <RadioButton
-        options={['1880', '2022']}
-        value="1880"
-        onChange={(e) => {
-          const value = e.target.value
-          if (value == '1880') setOldMap(true)
-          else setOldMap(false)
-        }}
-      />
+      <div className="text-center m-3">
+        <FormLabel>Karta</FormLabel>
+        <InputGroup className="flex mb-3 justify-center">
+          <FormCheck
+            inline
+            name="year"
+            label="1880"
+            type="radio"
+            checked={oldMap}
+            onChange={() => setOldMap(true)}
+          />
+          <FormCheck
+            inline
+            name="year"
+            label="2022"
+            type="radio"
+            checked={!oldMap}
+            onChange={() => setOldMap(false)}
+          />
+        </InputGroup>
+      </div>
       <div className="flex gap-x-2">
         <Link
           href={yesterdayDate ? `/days/${yearMonthDay(yesterdayDate)}` : ''}
@@ -95,13 +101,20 @@ export default function DayPage({
           </Button>
         </Link>
       </div>
-      <DatePicker
+      <h2 className="text-4xl font-bold text-center">
+        {day.date.toLocaleDateString('sv-SE', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      </h2>
+      {/* <DatePicker
         date={yearMonthDay(day.date)}
         startDate={yearMonthDay(startDate)}
         finnishDate={yearMonthDay(finnishDate)}
-      />
+      /> */}
       {diaryEntryTags}
-      <div className="mb-6"></div>
     </div>
   )
 }

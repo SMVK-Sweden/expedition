@@ -12,12 +12,13 @@ export async function createDay(date: Date) {
 
 // if date is a string it is expected to be a yyyy-mm-dd
 export async function getDay(date: Date): Promise<DayWithDiaryEntries> {
-  const { data, status } = await axios.get<DayWithDiaryEntries>(
-    `/api/days/${yearMonthDay(date)}`
-  )
+  const { data, status } = await axios.get<DayWithDiaryEntries>(getDayURL(date))
   console.log('getDay status = ', status)
   return data
 }
+
+export const getDayURL = (date: Date): string =>
+  `/api/days/${yearMonthDay(date)}`
 
 export async function updateDay(date: Date, updatedDay: DayWithDiaryEntries) {
   const { data, status } = await axios.put<DayWithDiaryEntries>(
