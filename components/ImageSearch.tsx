@@ -9,12 +9,18 @@ import Button from './Button'
 
 interface ImageSearchProps {
   onMarked: (images: KsamsokImageWithDescription[]) => void
+  markedImages?: KsamsokImageWithDescription[]
 }
 
-export default function ImageSearch({ onMarked }: ImageSearchProps) {
+export default function ImageSearch({
+  onMarked,
+  markedImages,
+}: ImageSearchProps) {
   const [query, setQuery] = useState('')
   const [records, setRecords] = useState<KsamsokImageWithDescription[]>([])
-  const [marked, setMarked] = useState<KsamsokImageWithDescription[]>([])
+  const [marked, setMarked] = useState<KsamsokImageWithDescription[]>(
+    markedImages || []
+  )
   useEffect(() => {
     const f = async () => {
       const res = await getImagesWithDescription(query)

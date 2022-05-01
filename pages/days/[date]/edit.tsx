@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import ImageSearch from '../../../components/ImageSearch'
 import { getDay } from '../../../lib/api/days'
+import { KsamsokImageWithDescription } from '../../../lib/types/ksamsokTypes'
 import { DayWithContent } from '../../../lib/types/prismaTypes'
 
 export default function DayEdit() {
