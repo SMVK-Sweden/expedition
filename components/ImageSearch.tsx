@@ -9,7 +9,7 @@ import Button from './Button'
 
 interface ImageSearchProps {
   onMarked: (images: KsamsokImageWithDescription[]) => void
-  markedImages?: KsamsokImageWithDescription[]
+  markedImages: KsamsokImageWithDescription[]
 }
 
 export default function ImageSearch({
@@ -18,9 +18,8 @@ export default function ImageSearch({
 }: ImageSearchProps) {
   const [query, setQuery] = useState('')
   const [records, setRecords] = useState<KsamsokImageWithDescription[]>([])
-  const [marked, setMarked] = useState<KsamsokImageWithDescription[]>(
-    markedImages || []
-  )
+  const [marked, setMarked] =
+    useState<KsamsokImageWithDescription[]>(markedImages)
   useEffect(() => {
     const f = async () => {
       const res = await getImagesWithDescription(query)
@@ -29,6 +28,7 @@ export default function ImageSearch({
 
     f()
   }, [])
+  console.log('imagesearch', markedImages, marked)
 
   return (
     <div className="rounded-md bg-gray-100 overflow-scroll h-full">
@@ -49,34 +49,32 @@ export default function ImageSearch({
         </Button>
       </form>
       <div className="rounded-md bg-gray-200">
-        {marked
-          .concat(records.filter((re) => !markedInList(re, marked)))
-          .map((r) => (
-            <div
-              key={r.src}
-              className={`${
-                markedInList(r, marked)
-                  ? 'border-black border-4 bg-gray-300'
-                  : 'hover:border-gray-300 hover:border-2'
-              }`}
-              onClick={() => {
-                const m = Array.from(marked)
-                if (markedInList(r, marked)) {
-                  const newMarked = m.filter(
-                    (e) => !compareKsamsokImageWithDescription(e, r)
-                  )
-                  setMarked(newMarked)
-                  onMarked(newMarked)
-                } else {
-                  const newMarked = [...m, r]
-                  setMarked(newMarked)
-                  onMarked(newMarked)
-                }
-              }}
-            >
-              <ImageWithDescription src={r.src} description={r.description} />
-            </div>
-          ))}
+        {records.map((r) => (
+          <div
+            key={r.src}
+            className={`${
+              markedInList(r, marked)
+                ? 'border-black border-4 bg-gray-300'
+                : 'hover:border-gray-300 hover:border-2'
+            }`}
+            onClick={() => {
+              const m = Array.from(marked)
+              if (markedInList(r, marked)) {
+                const newMarked = m.filter(
+                  (e) => !compareKsamsokImageWithDescription(e, r)
+                )
+                setMarked(newMarked)
+                onMarked(newMarked)
+              } else {
+                const newMarked = [...m, r]
+                setMarked(newMarked)
+                onMarked(newMarked)
+              }
+            }}
+          >
+            <ImageWithDescription src={r.src} description={r.description} />
+          </div>
+        ))}
       </div>
     </div>
   )

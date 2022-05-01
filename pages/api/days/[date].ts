@@ -51,14 +51,23 @@ export default async function handler(
     })
 
     // update
+    const updatedEntries = updatedDay.diaryEntries.map((e) => ({
+      author: e.author,
+      content: e.content,
+    }))
+    const updatedKsamsokImages = updatedDay.ksamsokImages.map((im) => ({
+      url: im.url,
+      description: im.description || '',
+    }))
+    console.log(updatedDay)
     const day = await prisma.day.update({
       where: { date: new Date(datestr) },
       data: {
         place: updatedDay.place,
         latitude: updatedDay.latitude,
         longitude: updatedDay.longitude,
-        diaryEntries: { create: updatedDay.diaryEntries },
-        ksamsokImages: { create: updatedDay.ksamsokImages },
+        diaryEntries: { create: updatedEntries },
+        ksamsokImages: { create: updatedKsamsokImages },
       },
     })
     return res.status(200).json(day)
