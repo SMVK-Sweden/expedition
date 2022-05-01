@@ -47,33 +47,58 @@ export default function ImageSearch({
           <input type="submit" value="sök" />
         </Button>
       </form>
+      <h3>bilder som redan är tillagda</h3>
+      <p>(klicka på en bild för att ta bort den)</p>
+      {marked.map((r) => (
+        <div
+          className="hover:border-gray-300 hover:border-2"
+          key={r.src}
+          onClick={() => {
+            const m = Array.from(marked)
+            if (markedInList(r, marked)) {
+              const newMarked = m.filter(
+                (e) => !compareKsamsokImageWithDescription(e, r)
+              )
+              setMarked(newMarked)
+              onMarked(newMarked)
+            }
+          }}
+        >
+          <ImageWithDescription src={r.src} description={r.description} />
+        </div>
+      ))}
+
+      <h3>hitta nya bilder</h3>
+      <p>(klicka på en bild för att lägga till den)</p>
       <div className="rounded-md bg-gray-200">
-        {records.map((r) => (
-          <div
-            key={r.src}
-            className={`${
-              markedInList(r, marked)
-                ? 'border-black border-4 bg-gray-300'
-                : 'hover:border-gray-300 hover:border-2'
-            }`}
-            onClick={() => {
-              const m = Array.from(marked)
-              if (markedInList(r, marked)) {
-                const newMarked = m.filter(
-                  (e) => !compareKsamsokImageWithDescription(e, r)
-                )
-                setMarked(newMarked)
-                onMarked(newMarked)
-              } else {
-                const newMarked = [...m, r]
-                setMarked(newMarked)
-                onMarked(newMarked)
-              }
-            }}
-          >
-            <ImageWithDescription src={r.src} description={r.description} />
-          </div>
-        ))}
+        {records
+          .filter((r) => !markedInList(r, marked))
+          .map((r) => (
+            <div
+              key={r.src}
+              className={`${
+                markedInList(r, marked)
+                  ? 'border-black border-4 bg-gray-300'
+                  : 'hover:border-gray-300 hover:border-2'
+              }`}
+              onClick={() => {
+                const m = Array.from(marked)
+                if (markedInList(r, marked)) {
+                  const newMarked = m.filter(
+                    (e) => !compareKsamsokImageWithDescription(e, r)
+                  )
+                  setMarked(newMarked)
+                  onMarked(newMarked)
+                } else {
+                  const newMarked = [...m, r]
+                  setMarked(newMarked)
+                  onMarked(newMarked)
+                }
+              }}
+            >
+              <ImageWithDescription src={r.src} description={r.description} />
+            </div>
+          ))}
       </div>
     </div>
   )
