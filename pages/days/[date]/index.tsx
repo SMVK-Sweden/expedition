@@ -15,17 +15,21 @@ import { DayWithContent } from '../../../lib/types/prismaTypes'
 import { getDay } from '../../../lib/api/days'
 import ImageWithDescription from '../../../components/ImageWithDescription'
 import { useRouter } from 'next/router'
+import axios from 'axios'
+import { KsamsokImageProps, processRecord } from '../../../lib/ksamsok'
 
 interface DayProps {
   day: DayWithContent
   previousDays: Day[]
   followingDays: Day[]
+  images: KsamsokImageProps[]
 }
 
 export default function DayPage({
   day,
   previousDays,
   followingDays,
+  images,
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
   const router = useRouter()
@@ -39,13 +43,16 @@ export default function DayPage({
     />
   ))
 
-  const ksamsokImageTags = day.ksamsokImages?.map((image: KsamsokImage) => (
-    <ImageWithDescription
-      src={image.url}
-      description={image.description || undefined}
-      key={image.url}
-    />
-  ))
+  const ksamsokImageTags = images?.map(
+    (image: KsamsokImageProps) =>
+      image && (
+        <ImageWithDescription
+          src={image.url}
+          description={image.description || undefined}
+          key={image.url}
+        />
+      )
+  )
 
   const boatPos: LatLng = [day.latitude!, day.longitude!]
   const pathTraveled: LatLngList = previousDays
@@ -175,6 +182,15 @@ interface staticPropsParams {
   }
 }
 
+async function getImages(ksamsokImages: KsamsokImage[]) {
+  const promises = await Promise.all(
+    ksamsokImages.map(async (image) =>
+      axios.get(image.url).then((res) => processRecord(res.data))
+    )
+  )
+  return promises
+}
+
 export async function getStaticProps({ params }: staticPropsParams) {
   const day = await prisma.day.findUnique({
     where: {
@@ -192,11 +208,14 @@ export async function getStaticProps({ params }: staticPropsParams) {
     orderBy: { date: 'asc' },
   })
 
+  const images = await getImages(day?.ksamsokImages || [])
+
   return {
     props: {
       day,
       previousDays,
       followingDays,
+      images,
     },
   }
 }

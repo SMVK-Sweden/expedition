@@ -25,6 +25,36 @@ export async function ksamsokSearch(query: string, metadata: string) {
   return json.result
 }
 
+export interface KsamsokImageProps {
+  url: string
+  description?: string | null
+}
+
+export function processRecord(record: any): KsamsokImageProps {
+  const g = record['@graph']
+  const possibleSource = g.find(
+    (node: any) => node['@type'] == 'Image' || node['@type'] == 'ns1:Image' // sometimes, the nodenames has the prefix ns1:
+  )
+
+  const source = possibleSource ? possibleSource.lowresSource : ''
+
+  const descriptions = g.filter(
+    (node: any) =>
+      node['@type'] == 'ItemDescription' ||
+      node['@type'] == 'ns1:ItemDescription'
+  )
+
+  const possibleDescription = descriptions.find(
+    (node: any) => node.type['@value'] == 'Beskrivning'
+  )
+
+  const description = possibleDescription
+    ? possibleDescription.desc['@value']
+    : 'beskrivning saknas'
+
+  return { url: source, description: description }
+}
+
 export async function getImagesWithDescription(query: string) {
   const res = await ksamsokSearch(query, '')
   const graphs = res.records.map((record: any) => record.record['@graph'])

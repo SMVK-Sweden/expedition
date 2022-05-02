@@ -2,11 +2,18 @@ import { queryHelpers } from '@storybook/testing-library'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Form, FormControl, InputGroup } from 'react-bootstrap'
+import {
+  Button,
+  Form,
+  FormControl,
+  FormLabel,
+  InputGroup,
+} from 'react-bootstrap'
 import useSWR from 'swr'
 import { getDay, updateDay } from '../../../lib/api/days'
 import { DayWithContent } from '../../../lib/types/prismaTypes'
 import { useForm } from 'react-hook-form'
+import { KsamsokImageProps } from '../../../lib/ksamsok'
 
 export default function DayEditForm() {
   const router = useRouter()
@@ -34,6 +41,11 @@ export default function DayEditForm() {
 
   useEffect(() => {
     reset(data)
+    const images = data?.ksamsokImages.map(({ url, description }) => ({
+      url,
+      description,
+    }))
+    setImages(images || [])
   }, [data, reset])
 
   const onSubmit = (data: any) =>
@@ -41,7 +53,22 @@ export default function DayEditForm() {
       ...data,
       latitude: parseFloat(data.latitude),
       longitude: parseFloat(data.longitude),
+      ksamsokImages: newImages,
     })
+
+  const [newImages, setImages] = useState<KsamsokImageProps[]>([])
+
+  const handleAddImage = () => {
+    const url = prompt('Vilken URL?')
+    const parts = url?.split('/')
+    if (parts === undefined) return
+    parts[0] = 'https:'
+    parts[parts.length - 2] = 'jsonld'
+    const newUrl = parts.join('/')
+    axios.get(newUrl).then(() => {
+      setImages([...newImages, { url: newUrl, description: '' }])
+    })
+  }
 
   return (
     <div className="w-full max-w-4xl m-auto prose py-10 px-5 bg-brown-100 h-full shadow">
@@ -74,6 +101,27 @@ export default function DayEditForm() {
               {...register('longitude')}
             />
           </InputGroup>
+          <FormLabel>Bilder</FormLabel>
+          {newImages.map((image) => (
+            <InputGroup key={image.url}>
+              <FormControl disabled value={image.url} />
+              <Button
+                variant="danger"
+                onClick={() =>
+                  setImages(newImages.filter((img) => img.url !== image.url))
+                }
+              >
+                Ta bort
+              </Button>
+            </InputGroup>
+          ))}
+          <Button
+            variant="secondary"
+            className="w-full my-2"
+            onClick={handleAddImage}
+          >
+            Lägg till bild
+          </Button>
           <Button className="w-full" type="submit" disabled={isSubmitting}>
             Spara ändringar
           </Button>
