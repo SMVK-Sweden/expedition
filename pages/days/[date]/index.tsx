@@ -217,5 +217,6 @@ export async function getStaticProps({ params }: staticPropsParams) {
       followingDays,
       images,
     },
+    revalidate: 10,
   }
 }

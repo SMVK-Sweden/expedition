@@ -73,7 +73,7 @@ export default function DayEditForm() {
     const parts = url?.split('/')
     if (parts === undefined) return
     parts[0] = 'https:'
-    parts[parts.length - 2] = 'jsonld'
+    parts.splice(parts.length - 1, 0, 'jsonld')
     const newUrl = parts.join('/')
     axios.get(newUrl).then(() => {
       setImages([...newImages, { url: newUrl, description: '' }])
@@ -144,6 +144,16 @@ export default function DayEditForm() {
                       changeDiaries(index, e.target.value, 'content')
                     }
                   />
+                  <Button
+                    variant="danger"
+                    onClick={() =>
+                      setDiaries(
+                        diaries.filter((d) => d.content !== diary.content)
+                      )
+                    }
+                  >
+                    Ta bort
+                  </Button>
                 </InputGroup>
               </div>
             ))}
