@@ -1,5 +1,5 @@
 import CanvasMap from '../../../components/Map/CanvasMap'
-import Button from '../../../components/Button'
+import Button from 'react-bootstrap/Button'
 import Link from 'next/link'
 import { yearMonthDay } from '../../../lib/dateConversion'
 import { useState } from 'react'
@@ -9,25 +9,30 @@ import DatePicker from '../../../components/DatePicker'
 import { PrismaClient, Day, DiaryEntry, KsamsokImage } from '@prisma/client'
 const prisma = new PrismaClient()
 import { LatLng, LatLngList } from '../../../lib/types/LatLng'
+import FormCheck from 'react-bootstrap/FormCheck'
+import { FormLabel, InputGroup } from 'react-bootstrap'
 import { DayWithContent } from '../../../lib/types/prismaTypes'
 import { getDay } from '../../../lib/api/days'
 import ImageWithDescription from '../../../components/ImageWithDescription'
 import { useRouter } from 'next/router'
+import axios from 'axios'
+import { KsamsokImageProps, processRecord } from '../../../lib/ksamsok'
 
 interface DayProps {
   day: DayWithContent
   previousDays: Day[]
   followingDays: Day[]
+  images: KsamsokImageProps[]
 }
 
 export default function DayPage({
   day,
   previousDays,
   followingDays,
+  images,
 }: DayProps) {
   const [oldMap, setOldMap] = useState(true)
   const router = useRouter()
-  console.log(day)
 
   const diaryEntryTags = day.diaryEntries?.map((entry: DiaryEntry) => (
     <Note
@@ -38,13 +43,16 @@ export default function DayPage({
     />
   ))
 
-  const ksamsokImageTags = day.ksamsokImages?.map((image: KsamsokImage) => (
-    <ImageWithDescription
-      src={image.url}
-      description={image.description || undefined}
-      key={image.url}
-    />
-  ))
+  const ksamsokImageTags = images?.map(
+    (image: KsamsokImageProps) =>
+      image && (
+        <ImageWithDescription
+          src={image.url}
+          description={image.description || undefined}
+          key={image.url}
+        />
+      )
+  )
 
   const boatPos: LatLng = [day.latitude!, day.longitude!]
   const pathTraveled: LatLngList = previousDays
@@ -62,15 +70,7 @@ export default function DayPage({
       : day.date
 
   return (
-    <div className="w-full max-w-6xl m-auto mt-6">
-      <p className="text-lg font-bold text-center">
-        {new Date(day.date).toLocaleDateString('sv-SE', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </p>
+    <div className="w-full max-w-6xl m-auto mt-6 pb-10">
       <div style={{ height: '50vh' }}>
         <CanvasMap
           boatCoordinates={boatPos}
@@ -78,18 +78,31 @@ export default function DayPage({
           oldMap={oldMap}
         />
       </div>
-      <RadioButton
-        options={['1880', '2022']}
-        value="1880"
-        onChange={(e) => {
-          const value = e.target.value
-          if (value == '1880') setOldMap(true)
-          else setOldMap(false)
-        }}
-      />
-      <div className="flex gap-x-2">
+      <div className="text-center m-3">
+        <FormLabel>Karta</FormLabel>
+        <InputGroup className="flex mb-3 justify-center">
+          <FormCheck
+            inline
+            name="year"
+            label="1880"
+            type="radio"
+            checked={oldMap}
+            onChange={() => setOldMap(true)}
+          />
+          <FormCheck
+            inline
+            name="year"
+            label="2022"
+            type="radio"
+            checked={!oldMap}
+            onChange={() => setOldMap(false)}
+          />
+        </InputGroup>
+      </div>
+      <div className="flex gap-x-2 mb-14">
         <Link
           href={yesterdayDate ? `/days/${yearMonthDay(yesterdayDate)}` : ''}
+          passHref
         >
           <Button
             className={`flex-auto ${
@@ -99,7 +112,10 @@ export default function DayPage({
             igår
           </Button>
         </Link>
-        <Link href={tomorrowDate ? `/days/${yearMonthDay(tomorrowDate)}` : ''}>
+        <Link
+          href={tomorrowDate ? `/days/${yearMonthDay(tomorrowDate)}` : ''}
+          passHref
+        >
           <Button
             className={`flex-auto ${
               tomorrowDate ? '' : 'bg-slate-200 bg hover:bg-slate-200 '
@@ -109,26 +125,37 @@ export default function DayPage({
           </Button>
         </Link>
       </div>
-      <DatePicker
+      <h2 className="text-2xl font-semibold">
+        {day.date.toLocaleDateString('sv-SE', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      </h2>
+      <h3 className="font-bold text-4xl">{day.place}</h3>
+      {/* <DatePicker
         date={yearMonthDay(day.date)}
         startDate={yearMonthDay(startDate)}
         finnishDate={yearMonthDay(finnishDate)}
-      />
-      <h2>{day.place}</h2>
+      /> */}
       {diaryEntryTags}
       {ksamsokImageTags}
       <div className="mb-6"></div>
-      <Button
-        onClick={() => {
-          router.push(
-            `/days/${
-              typeof router.query.date === 'string' ? router.query.date : ''
-            }/edit`
-          )
-        }}
-      >
-        Redigera
-      </Button>
+      <Link href={`/days/${router.query.date as string}/edit`} passHref>
+        <Button>Redigera</Button>
+        {/* <Button
+        // onClick={() => {
+        //   router.push(
+        //     `/days/${
+        //       typeof router.query.date === 'string' ? router.query.date : ''
+        //     }/edit`
+        //   )
+        // }}
+        >
+          Redigera
+        </> */}
+      </Link>
     </div>
   )
 }
@@ -155,6 +182,15 @@ interface staticPropsParams {
   }
 }
 
+async function getImages(ksamsokImages: KsamsokImage[]) {
+  const promises = await Promise.all(
+    ksamsokImages.map(async (image) =>
+      axios.get(image.url).then((res) => processRecord(res.data))
+    )
+  )
+  return promises
+}
+
 export async function getStaticProps({ params }: staticPropsParams) {
   const day = await prisma.day.findUnique({
     where: {
@@ -172,11 +208,14 @@ export async function getStaticProps({ params }: staticPropsParams) {
     orderBy: { date: 'asc' },
   })
 
+  const images = await getImages(day?.ksamsokImages || [])
+
   return {
     props: {
       day,
       previousDays,
       followingDays,
+      images,
     },
   }
 }

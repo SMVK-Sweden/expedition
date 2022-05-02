@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 export default function About() {
   return (
-    <div className="w-full max-w-6xl m-auto">
-      <h3 className="text-center">
-        Vanadis världsomsegling - Jorden runt på 500 dagar
-      </h3>
+    <div className="w-full max-w-3xl m-auto prose p-10">
+      <h1 className="text-center mb-0">Vanadis världsomsegling</h1>
+      <h2 className="text-center mt-2">Jorden runt på 500 dagar</h2>
       <p>
         Det är en kanot!!! Ser ni? Där borta!!! Där!!! Matrosen stod i det kalla
         regnet uppe på Vanadis däck och pekade i riktning mot den dimhöljda
@@ -13,7 +13,10 @@ export default function About() {
         gäller det, du får inte missa det här!!!
       </p>
       <div className="flex justify-center">
-        <img src="https://collections.smvk.se/carlotta-em/web/image/zoom/1487175/image.jpg" />
+        <img
+          src="https://collections.smvk.se/carlotta-em/web/image/zoom/1487175/image.jpg"
+          alt="vanadis"
+        />
       </div>
       <p>
         Den här scenenen spelades upp den 5:e mars 1884 i de allra sydligaste

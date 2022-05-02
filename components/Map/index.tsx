@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import LeafletMap from './LeafletMap'
+import LeafletMap from './LeafletMap/Map'
 import SvgMap from './SvgMap'
 import ComponentToggle from '../ComponentToggle'
 

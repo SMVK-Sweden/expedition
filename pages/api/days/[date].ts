@@ -59,7 +59,6 @@ export default async function handler(
       url: im.url,
       description: im.description || '',
     }))
-    console.log(updatedDay)
     const day = await prisma.day.update({
       where: { date: new Date(datestr) },
       data: {

@@ -6,7 +6,7 @@ class NavigationBar extends Component {
   state = {}
   render() {
     return (
-      <nav className="navbar static-top navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar static-top navbar-expand-lg navbar-light bg-brown-400 shadow-sm">
         <button
           className="navbar-toggler"
           type="button"
