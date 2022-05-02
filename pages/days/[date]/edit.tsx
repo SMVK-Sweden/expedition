@@ -14,6 +14,7 @@ import { getDay, updateDay } from '../../../lib/api/days'
 import { DayWithContent } from '../../../lib/types/prismaTypes'
 import { useForm } from 'react-hook-form'
 import { KsamsokImageProps } from '../../../lib/ksamsok'
+import { DiaryEntry } from '@prisma/client'
 
 export default function DayEditForm() {
   const router = useRouter()
@@ -46,6 +47,10 @@ export default function DayEditForm() {
       description,
     }))
     setImages(images || [])
+    setDiaries(
+      data?.diaryEntries.map(({ author, content }) => ({ author, content })) ||
+        []
+    )
   }, [data, reset])
 
   const onSubmit = (data: any) =>
@@ -54,12 +59,17 @@ export default function DayEditForm() {
       latitude: parseFloat(data.latitude),
       longitude: parseFloat(data.longitude),
       ksamsokImages: newImages,
+      diaryEntries: diaries,
     })
 
   const [newImages, setImages] = useState<KsamsokImageProps[]>([])
+  const [diaries, setDiaries] = useState<
+    Pick<DiaryEntry, 'content' | 'author'>[]
+  >([])
 
   const handleAddImage = () => {
     const url = prompt('Vilken URL?')
+    if (url === undefined) return
     const parts = url?.split('/')
     if (parts === undefined) return
     parts[0] = 'https:'
@@ -68,6 +78,16 @@ export default function DayEditForm() {
     axios.get(newUrl).then(() => {
       setImages([...newImages, { url: newUrl, description: '' }])
     })
+  }
+
+  const changeDiaries = (
+    index: number,
+    value: string,
+    field: 'author' | 'content'
+  ) => {
+    const copy = diaries
+    copy[index][field] = value
+    setDiaries([...copy])
   }
 
   return (
@@ -88,7 +108,7 @@ export default function DayEditForm() {
             <FormControl
               aria-describedby="latitude"
               type="number"
-              step="0.00000000000001"
+              step="0.000000000000001"
               {...register('latitude')}
             />
           </InputGroup>
@@ -97,10 +117,52 @@ export default function DayEditForm() {
             <FormControl
               aria-describedby="longitude"
               type="number"
-              step="0.00000000000001"
+              step="0.000000000000001"
               {...register('longitude')}
             />
           </InputGroup>
+          <div className="my-4">
+            <FormLabel>Dagböcker</FormLabel>
+            {diaries.map((diary, index) => (
+              <div key={index} className="bg-brown-200 shadow my-4 rounded p-6">
+                <FormLabel>Dagboksförfattare</FormLabel>
+                <InputGroup>
+                  <FormControl
+                    value={diary.author}
+                    onChange={(e) =>
+                      changeDiaries(index, e.target.value, 'author')
+                    }
+                  />
+                </InputGroup>
+                <FormLabel>Text</FormLabel>
+                <InputGroup>
+                  <FormControl
+                    value={diary.content}
+                    as="textarea"
+                    rows={7}
+                    onChange={(e) =>
+                      changeDiaries(index, e.target.value, 'content')
+                    }
+                  />
+                </InputGroup>
+              </div>
+            ))}
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={() =>
+                setDiaries([
+                  ...diaries,
+                  {
+                    author: '',
+                    content: '',
+                  },
+                ])
+              }
+            >
+              Lägg till dagbok
+            </Button>
+          </div>
           <FormLabel>Bilder</FormLabel>
           {newImages.map((image) => (
             <InputGroup key={image.url}>
