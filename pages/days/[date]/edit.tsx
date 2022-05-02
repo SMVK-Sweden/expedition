@@ -145,6 +145,15 @@ export default function DayEditForm() {
                     }
                   />
                 </InputGroup>
+                <Button
+                  variant="danger"
+                  className="w-full"
+                  onClick={() =>
+                    setDiaries(diaries.filter((diary, i) => index !== i))
+                  }
+                >
+                  Ta bort dagbok
+                </Button>
               </div>
             ))}
             <Button
